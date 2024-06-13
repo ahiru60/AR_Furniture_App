@@ -1,0 +1,142 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <!-- Container for fragments -->
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:id="@+id/fragment_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="86dp"
+                android:background="@drawable/background_gradient_shape"
+                android:fontFamily="sans-serif-black"
+                android:text="Home"
+                android:textColor="@color/white"
+                android:textSize="24sp">
+
+<!--                <TextView-->
+<!--                    android:id="@+id/bannerText"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:background="@color/cool_purple"-->
+<!--                    android:fontFamily="sans-serif-black"-->
+<!--                    android:letterSpacing="0.03"-->
+<!--                    android:text="Home"-->
+<!--                    android:textAlignment="center"-->
+<!--                    android:textColor="@color/white"-->
+<!--                    android:textSize="28sp"-->
+<!--                    app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                    app:layout_constraintEnd_toEndOf="parent"-->
+<!--                    app:layout_constraintStart_toStartOf="parent"-->
+<!--                    app:layout_constraintTop_toTopOf="parent" />-->
+
+                <EditText
+                    android:id="@+id/searchEditText"
+                    android:layout_width="300dp"
+                    android:layout_height="44dp"
+                    android:layout_margin="10sp"
+                    android:background="@drawable/background_round_edged_shape"
+                    android:paddingHorizontal="15sp"
+                    android:paddingVertical="6sp"
+                    android:hint="Search"
+                    android:textColorHint="@color/white"
+                    android:textColor="@color/white"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.234"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.619">
+
+                </EditText>
+
+                <ImageButton
+                    android:id="@+id/imageButton"
+                    android:layout_width="44sp"
+                    android:layout_height="44sp"
+                    android:layout_gravity="end"
+                    android:layout_marginEnd="24dp"
+                    android:background="#00FFFFFF"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ic_search"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.6"
+                    app:layout_constraintStart_toEndOf="@+id/searchEditText"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.571"
+                    app:tint="@color/white" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/fragmentContainerView"
+                android:name="com.example.ar_furniture_application.Home_Fragments.HomeFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_gravity="bottom"
+            android:background="@drawable/background_gradient_shape"
+            android:gravity="center"
+            android:orientation="horizontal"
+            >
+
+            <ImageButton
+                android:id="@+id/home_imageBtn"
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:background="@null"
+                android:padding="11dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_home"
+                app:tint="@color/white"></ImageButton>
+
+            <ImageButton
+                android:id="@+id/search_imageBtn"
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:background="@null"
+                android:padding="11dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_search"
+                app:tint="@color/white"></ImageButton>
+            <ImageButton
+                android:id="@+id/notification_imageBtn"
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:background="@null"
+                android:padding="11dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_notification"
+                app:tint="@color/white"></ImageButton>
+            <ImageButton
+                android:id="@+id/profile_imageBtn"
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:background="@null"
+                android:padding="11dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_profile"
+                app:tint="@color/white"></ImageButton>
+
+
+        </LinearLayout>
+    </FrameLayout>
+
+    <!-- Bottom Navigation -->
+</RelativeLayout>
