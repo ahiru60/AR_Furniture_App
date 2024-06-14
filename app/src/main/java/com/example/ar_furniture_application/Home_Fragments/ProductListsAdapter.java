@@ -15,7 +15,7 @@ import com.example.ar_furniture_application.R;
 
 public class ProductListsAdapter extends RecyclerView.Adapter<ProductListsAdapter.ProductListsViewHolder> {
     private OnItemClickListener onItemClickListener;
-    public ProductListsAdapter(){
+    public ProductListsAdapter(OnItemClickListener onItemClickListener){
 
         this.onItemClickListener = onItemClickListener;
     }

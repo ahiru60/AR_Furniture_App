@@ -68,7 +68,7 @@ public class ProductsListFragment extends Fragment implements ProductListsAdapte
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_products_list, container, false);
-        ProductListsAdapter productListsAdapter = new ProductListsAdapter();
+        ProductListsAdapter productListsAdapter = new ProductListsAdapter(this);
         RecyclerView recyclerView = view.findViewById(R.id.product_list_recyclerView);
 
         recyclerView.setAdapter(productListsAdapter);
