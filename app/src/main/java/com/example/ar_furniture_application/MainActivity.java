@@ -2,7 +2,6 @@ package com.example.ar_furniture_application;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import android.os.Bundle;
@@ -11,7 +10,7 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
-import com.example.ar_furniture_application.Home_Fragments.HomeFragment;
+import com.example.ar_furniture_application.Home.Home_Fragments.HomeFragment;
 
 public class MainActivity extends AppCompatActivity {
     ImageButton homeImgButton,searchImgButton,notifImgButton,profileImgButton,topSearchImageButton;

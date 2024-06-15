@@ -1,4 +1,4 @@
-package com.example.ar_furniture_application.Home_Fragments;
+package com.example.ar_furniture_application.Home.Home_Fragments;
 
 import android.os.Bundle;
 

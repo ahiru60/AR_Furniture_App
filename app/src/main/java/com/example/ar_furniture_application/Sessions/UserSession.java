@@ -3,7 +3,8 @@ package com.example.ar_furniture_application.Sessions;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.example.ar_furniture_application.Roles.User;
+import com.example.ar_furniture_application.Roles.Role;
+import com.example.ar_furniture_application.Roles.Customer;
 
 public class UserSession {
     private static final String PREF_NAME = "user_session";
@@ -12,22 +13,26 @@ public class UserSession {
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
 
+    private Role user;
+
     public UserSession(Context context) {
         sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
     }
 
-    public void createSession(User user) {
+    public void createSession(Role user) {
         editor.putString(KEY_USER_ID, user.getUserId());
         editor.putString(KEY_USER_ROLE, user.getRole());
         editor.apply();
     }
 
-    public User getUser() {
+    public String[] getUser() {
+
         String userId = sharedPreferences.getString(KEY_USER_ID, null);
         String role = sharedPreferences.getString(KEY_USER_ROLE, null);
         if (userId != null && role != null) {
-            return new User(userId, null, null, Role.valueOf(role));
+            String [] user = {userId,role};
+            return user;
         }
         return null;
     }
@@ -36,5 +41,6 @@ public class UserSession {
         editor.clear();
         editor.apply();
     }
+
 }
 

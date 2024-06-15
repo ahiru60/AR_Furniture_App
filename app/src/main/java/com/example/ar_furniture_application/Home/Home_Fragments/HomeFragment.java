@@ -1,9 +1,8 @@
-package com.example.ar_furniture_application.Home_Fragments;
+package com.example.ar_furniture_application.Home.Home_Fragments;
 
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 
 import android.view.LayoutInflater;
 import android.view.View;

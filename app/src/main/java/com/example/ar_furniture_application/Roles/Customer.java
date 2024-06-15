@@ -1,10 +1,10 @@
 package com.example.ar_furniture_application.Roles;
 
-public class User extends Role {
+public class Customer extends Role {
     private String paymentInformation;
 
     // Constructor
-    public User(String userName, String password, String emailAddress, String firstName, String lastName, String phoneNumber, String address, String[] orderHistory, String paymentInformation) {
+    public Customer(String userName, String password, String emailAddress, String firstName, String lastName, String phoneNumber, String address, String[] orderHistory, String paymentInformation) {
         super(userName, password, emailAddress, firstName, lastName, phoneNumber, address, orderHistory);
         this.paymentInformation = paymentInformation;
     }

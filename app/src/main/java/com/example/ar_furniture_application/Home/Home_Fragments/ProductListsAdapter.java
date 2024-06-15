@@ -1,4 +1,4 @@
-package com.example.ar_furniture_application.Home_Fragments;
+package com.example.ar_furniture_application.Home.Home_Fragments;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,10 +7,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.ar_furniture_application.Product.Product;
 import com.example.ar_furniture_application.R;
 
 public class ProductListsAdapter extends RecyclerView.Adapter<ProductListsAdapter.ProductListsViewHolder> {

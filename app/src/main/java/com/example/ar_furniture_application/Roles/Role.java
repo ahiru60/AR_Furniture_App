@@ -25,7 +25,6 @@ public class Role {
         this.address = address;
         this.orderHistory = orderHistory;
     }
-
     // Getters and Setters
     public String getRole() {
         return role;
@@ -139,4 +138,5 @@ public class Role {
         LOGISTICS,
         STORE_KEEPER
     }
+
 }
