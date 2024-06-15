@@ -16,7 +16,7 @@
             android:layout_width="170sp"
             android:layout_height="170sp"
             android:layout_marginTop="4dp"
-            android:background="@drawable/background_round_edged_shape"
+            android:background="@drawable/background_round_edged_white_shape"
             android:clipToOutline="true"
             android:src="@drawable/img_sample_product"
             app:layout_constraintEnd_toEndOf="parent"

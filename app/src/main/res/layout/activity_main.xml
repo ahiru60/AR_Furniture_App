@@ -17,6 +17,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/search_section"
                 android:layout_width="match_parent"
                 android:layout_height="86dp"
                 android:background="@drawable/background_gradient_shape"
@@ -46,7 +47,7 @@
                     android:layout_width="300dp"
                     android:layout_height="44dp"
                     android:layout_margin="10sp"
-                    android:background="@drawable/background_round_edged_shape"
+                    android:background="@drawable/background_round_edged_white_shape"
                     android:paddingHorizontal="15sp"
                     android:paddingVertical="6sp"
                     android:hint="Search"
@@ -62,21 +63,20 @@
                 </EditText>
 
                 <ImageButton
-                    android:id="@+id/imageButton"
+                    android:id="@+id/topSearchImageButton"
                     android:layout_width="44sp"
                     android:layout_height="44sp"
                     android:layout_gravity="end"
                     android:layout_marginEnd="24dp"
                     android:background="#00FFFFFF"
                     android:scaleType="centerInside"
-                    android:src="@drawable/ic_search"
+                    android:src="@drawable/ic_search_white"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.6"
                     app:layout_constraintStart_toEndOf="@+id/searchEditText"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.571"
-                    app:tint="@color/white" />
+                    app:layout_constraintVertical_bias="0.571" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.fragment.app.FragmentContainerView
@@ -113,7 +113,7 @@
                 android:background="@null"
                 android:padding="11dp"
                 android:scaleType="centerInside"
-                android:src="@drawable/ic_search"
+                android:src="@drawable/ic_search_white"
                 app:tint="@color/white"></ImageButton>
             <ImageButton
                 android:id="@+id/notification_imageBtn"
