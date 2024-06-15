@@ -1,6 +1,8 @@
 package com.example.ar_furniture_application.Roles;
 
 public class Role {
+    private String role;
+    private String userId;
     private String userName;
     private String password;
     private String emailAddress;
@@ -11,7 +13,9 @@ public class Role {
     private String[] orderHistory;
 
     // Constructor
-    public Role(String userName, String password, String emailAddress, String firstName, String lastName, String phoneNumber, String address, String[] orderHistory) {
+    public Role(String role,String userId, String userName, String password, String emailAddress, String firstName, String lastName, String phoneNumber, String address, String[] orderHistory) {
+        this.role = role;
+        this.userId = userId;
         this.userName = userName;
         this.password = password;
         this.emailAddress = emailAddress;
@@ -23,6 +27,11 @@ public class Role {
     }
 
     // Getters and Setters
+    public String getRole() {
+        return role;
+    }
+
+    public String getUserId(){return userId;}
     public String getUserName() {
         return userName;
     }
@@ -121,5 +130,13 @@ public class Role {
 
     public void deleteAccount() {
         // Implement delete account logic here
+    }
+
+    public enum Roles {
+        ADMIN,
+        USER,
+        GUEST,
+        LOGISTICS,
+        STORE_KEEPER
     }
 }
