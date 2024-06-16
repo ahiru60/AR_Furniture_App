@@ -35,11 +35,11 @@ public class MainActivity extends AppCompatActivity {
         searchSection = findViewById(R.id.search_section);
         searchEditText = findViewById(R.id.searchEditText);
         topSearchImageButton = findViewById(R.id.topSearchImageButton);
-
+        FragmentManager fragmentManager = getSupportFragmentManager();
         homeImgButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentManager fragmentManager = getSupportFragmentManager();
+               // FragmentManager fragmentManager = getSupportFragmentManager();
                 fragmentManager.beginTransaction()
                         .replace(R.id.fragmentContainerView, HomeFragment.class, null)
                         .setReorderingAllowed(true)
@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                FragmentManager fragmentManager = getSupportFragmentManager();
+
                 fragmentManager.beginTransaction()
                         .replace(R.id.fragmentContainerView, SearchFragment.class, null)
                         .setReorderingAllowed(true)
@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
         notifImgButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentManager fragmentManager = getSupportFragmentManager();
+                //FragmentManager fragmentManager = getSupportFragmentManager();
                 fragmentManager.beginTransaction()
                         .replace(R.id.fragmentContainerView, NotificationsFragment.class, null)
                         .setReorderingAllowed(true)
@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
         profileImgButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentManager fragmentManager = getSupportFragmentManager();
+                //FragmentManager fragmentManager = getSupportFragmentManager();
                 fragmentManager.beginTransaction()
                         .replace(R.id.fragmentContainerView, ProfileFragment.class, null)
                         .setReorderingAllowed(true)
@@ -106,4 +106,5 @@ public class MainActivity extends AppCompatActivity {
             searchEditText.setBackground(getDrawable(R.drawable.background_round_edged_white_shape));
             topSearchImageButton.setImageResource(R.drawable.ic_search_white);}
     }
+
 }

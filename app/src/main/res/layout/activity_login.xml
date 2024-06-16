@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Login.LoginFragments.LoginFragment">
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragmentContainerView3"
+        android:name="com.example.ar_furniture_application.Login.LoginFragments.LoginFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <ImageButton
+        android:id="@+id/close"
+        android:layout_width="42sp"
+        android:layout_height="42sp"
+        android:background="@color/transparent"
+        android:src="@drawable/ic_close"
+        app:tint="@color/white"
+        android:layout_margin="10sp"/>
+
+
+</FrameLayout>

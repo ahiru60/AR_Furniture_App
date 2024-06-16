@@ -26,15 +26,33 @@ public class UserSession {
         editor.apply();
     }
 
-    public String[] getUser() {
+    public CurrentSessionUser getCurrentUser() {
 
         String userId = sharedPreferences.getString(KEY_USER_ID, null);
         String role = sharedPreferences.getString(KEY_USER_ROLE, null);
         if (userId != null && role != null) {
-            String [] user = {userId,role};
+            CurrentSessionUser user = new CurrentSessionUser(userId,role);
             return user;
         }
         return null;
+    }
+
+    public class CurrentSessionUser{
+        private String userId;
+        private String role;
+
+        CurrentSessionUser(String userId,String role){
+            this.userId = userId;
+            this.role = role;
+        }
+
+        public String getUserId(){
+            return userId;
+        }
+
+        public String getRole() {
+            return role;
+        }
     }
 
     public void logout() {

@@ -13,7 +13,7 @@ public class Role {
     private String[] orderHistory;
 
     // Constructor
-    public Role(String role,String userId, String userName, String password, String emailAddress, String firstName, String lastName, String phoneNumber, String address, String[] orderHistory) {
+    public Role(String userName, String password, String emailAddress, String firstName, String lastName, String phoneNumber, String address, String[] orderHistory) {
         this.role = role;
         this.userId = userId;
         this.userName = userName;
@@ -25,6 +25,7 @@ public class Role {
         this.address = address;
         this.orderHistory = orderHistory;
     }
+
     // Getters and Setters
     public String getRole() {
         return role;

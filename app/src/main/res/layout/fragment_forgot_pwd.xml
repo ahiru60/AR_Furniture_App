@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Login.LoginFragments.LoginFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="250sp"
+            android:text="Forgot password"
+            android:textSize="40sp"
+            android:textColor="@color/white"
+            android:gravity="center"
+            android:background="@drawable/background_gradient_shape"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingHorizontal="15sp"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15sp"
+            android:text="We'll send a verification link to your email"
+            android:textSize="17dp"
+            android:textStyle="bold"/>
+
+            <EditText
+                android:id="@+id/editTextTextEmailAddress"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:background="@drawable/background_round_edged_grey_shape"
+                android:paddingHorizontal="15sp"
+                android:paddingVertical="6sp"
+                android:layout_marginTop="35sp"
+                android:layout_marginBottom="15sp"
+                android:hint="e-mail"
+                android:inputType="textEmailAddress" />
+            <Button
+                android:id="@+id/button"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginTop="20sp"
+                android:backgroundTint="#1F1735"
+                android:text="Send"
+                android:textSize="17sp" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="By continueing you agree to our Terms of Use and Privacy Policy."
+        android:gravity="center"
+        android:layout_gravity="bottom"
+        android:paddingHorizontal="15sp"
+        android:layout_marginVertical="20sp"/>
+
+</FrameLayout>

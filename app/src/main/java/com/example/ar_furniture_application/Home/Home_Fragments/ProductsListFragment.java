@@ -94,7 +94,7 @@ public class ProductsListFragment extends Fragment implements ProductListsAdapte
         fragmentManager.beginTransaction()
                 .replace(R.id.fragmentContainerView2, productPageFragment)
                 .setReorderingAllowed(true)
-                .addToBackStack(null) // Name can be null
+                .addToBackStack("product") // Name can be null
                 .commit();
     }
 }

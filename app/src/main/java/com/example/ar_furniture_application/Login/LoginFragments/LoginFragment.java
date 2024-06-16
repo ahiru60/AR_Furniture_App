@@ -3,11 +3,14 @@ package com.example.ar_furniture_application.Login.LoginFragments;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import com.example.ar_furniture_application.ForgotPwdFragment;
 import com.example.ar_furniture_application.R;
 
 /**
@@ -61,6 +64,38 @@ public class LoginFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_login, container, false);
+        View view = inflater.inflate(R.layout.fragment_login, container, false);
+
+        TextView signup = view.findViewById(R.id.signup);
+        TextView forgotPwd = view.findViewById(R.id.forgot_password);
+        signup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Create a new fragment instance
+                SignUpFragment signUpFragment = new SignUpFragment();
+
+                // Perform the fragment transaction
+                FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.fragmentContainerView3, signUpFragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
+            }
+        });
+
+        forgotPwd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Create a new fragment instance
+                ForgotPwdFragment forgotPwdFragment = new ForgotPwdFragment();
+
+                // Perform the fragment transaction
+                FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.fragmentContainerView3, forgotPwdFragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
+            }
+        });
+
+        return view;
     }
 }
