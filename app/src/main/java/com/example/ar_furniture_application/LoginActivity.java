@@ -28,16 +28,5 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-//        signup.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                FragmentManager fragmentManager = getSupportFragmentManager();
-//                fragmentManager.beginTransaction()
-//                        .replace(R.id.fragmentContainerView, ProfileFragment.class, null)
-//                        .setReorderingAllowed(true)
-//                        .addToBackStack("profile") // Name can be null
-//                        .commit();
-//            }
-//        });
     }
 }

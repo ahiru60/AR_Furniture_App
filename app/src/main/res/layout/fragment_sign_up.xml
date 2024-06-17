@@ -56,7 +56,7 @@
                 android:background="@drawable/background_round_edged_grey_shape"
                 android:paddingHorizontal="15sp"
                 android:paddingVertical="6sp"
-                android:hint="password"
+                android:hint="Re-password"
                 android:inputType="textPassword" />
 
 
@@ -110,7 +110,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="By continueing you agree to our Terms of Use and Privacy Policy."
+        android:text="By continuing you agree to our Terms of Use and Privacy Policy."
         android:gravity="center"
         android:layout_gravity="bottom"
         android:paddingHorizontal="15sp"

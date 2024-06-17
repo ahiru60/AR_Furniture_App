@@ -13,10 +13,8 @@ import android.widget.ImageButton;
 import com.example.ar_furniture_application.Home.Home_Fragments.HomeFragment;
 
 public class MainActivity extends AppCompatActivity {
-    ImageButton homeImgButton,searchImgButton,notifImgButton,profileImgButton,topSearchImageButton;
+    ImageButton homeImgButton,searchImgButton, cartImgButton,profileImgButton;
     View mContentView;
-    ConstraintLayout searchSection;
-    EditText searchEditText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,11 +28,9 @@ public class MainActivity extends AppCompatActivity {
 
         homeImgButton = findViewById(R.id.home_imageBtn);
         searchImgButton = findViewById(R.id.search_imageBtn);
-        notifImgButton= findViewById(R.id.notification_imageBtn);
+        cartImgButton = findViewById(R.id.cart_imageBtn);
         profileImgButton= findViewById(R.id.profile_imageBtn);
-        searchSection = findViewById(R.id.search_section);
-        searchEditText = findViewById(R.id.searchEditText);
-        topSearchImageButton = findViewById(R.id.topSearchImageButton);
+
         FragmentManager fragmentManager = getSupportFragmentManager();
         homeImgButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -45,7 +41,6 @@ public class MainActivity extends AppCompatActivity {
                         .setReorderingAllowed(true)
                         .addToBackStack("home") // Name can be null
                         .commit();
-                setSearchSectionColors(false);
             }
         });
 
@@ -59,13 +54,10 @@ public class MainActivity extends AppCompatActivity {
                         .setReorderingAllowed(true)
                         .addToBackStack("search") // Name can be null
                         .commit();
-
-                setSearchSectionColors(true);
-
             }
         });
 
-        notifImgButton.setOnClickListener(new View.OnClickListener() {
+        cartImgButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //FragmentManager fragmentManager = getSupportFragmentManager();
@@ -74,7 +66,6 @@ public class MainActivity extends AppCompatActivity {
                         .setReorderingAllowed(true)
                         .addToBackStack("notification") // Name can be null
                         .commit();
-                setSearchSectionColors(false);
             }
         });
 
@@ -87,24 +78,8 @@ public class MainActivity extends AppCompatActivity {
                         .setReorderingAllowed(true)
                         .addToBackStack("profile") // Name can be null
                         .commit();
-                setSearchSectionColors(false);
             }
         });
-    }
-
-    void setSearchSectionColors(boolean state){
-        if(state==true){
-        searchSection.setBackground(getDrawable(R.drawable.background_transparent_shape));
-        searchEditText.setTextColor(getResources().getColor(R.color.black, null));
-        searchEditText.setHintTextColor(getResources().getColor(R.color.black, null));
-        searchEditText.setBackground(getDrawable(R.drawable.background_round_edged_black_shape));
-        topSearchImageButton.setImageResource(R.drawable.ic_search_black);}
-        else{
-            searchSection.setBackground(getDrawable(R.drawable.background_gradient_shape));
-            searchEditText.setTextColor(getResources().getColor(R.color.white, null));
-            searchEditText.setHintTextColor(getResources().getColor(R.color.white, null));
-            searchEditText.setBackground(getDrawable(R.drawable.background_round_edged_white_shape));
-            topSearchImageButton.setImageResource(R.drawable.ic_search_white);}
     }
 
 }

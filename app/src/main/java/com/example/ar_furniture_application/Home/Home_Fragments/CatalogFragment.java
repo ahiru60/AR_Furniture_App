@@ -16,10 +16,10 @@ import com.example.ar_furniture_application.R;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link ProductsListFragment#newInstance} factory method to
+ * Use the {@link CatalogFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ProductsListFragment extends Fragment implements ProductListsAdapter.OnItemClickListener{
+public class CatalogFragment extends Fragment implements ProductListsAdapter.OnItemClickListener{
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -32,7 +32,7 @@ public class ProductsListFragment extends Fragment implements ProductListsAdapte
     private String mParam1;
     private String mParam2;
 
-    public ProductsListFragment() {
+    public CatalogFragment() {
         // Required empty public constructor
     }
 
@@ -45,8 +45,8 @@ public class ProductsListFragment extends Fragment implements ProductListsAdapte
      * @return A new instance of fragment ProductsListFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ProductsListFragment newInstance(String param1, String param2) {
-        ProductsListFragment fragment = new ProductsListFragment();
+    public static CatalogFragment newInstance(String param1, String param2) {
+        CatalogFragment fragment = new CatalogFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);

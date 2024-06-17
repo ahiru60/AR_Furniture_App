@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "823105288239",
+    "project_id": "ar-furniture-app-426706",
+    "storage_bucket": "ar-furniture-app-426706.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:823105288239:android:570c038c04e284e82f2eda",
+        "android_client_info": {
+          "package_name": "com.example.ar_furniture_application"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "823105288239-m127t8s372r01cbnsg5tsa88j389o76f.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.ar_furniture_application",
+            "certificate_hash": "9d521fa9d8e5a1ee869ccf4bceba59dbb17b954e"
+          }
+        },
+        {
+          "client_id": "823105288239-bf37anqui2atptbh9anocku0idtmgql0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCtpAwPQrUY_BbrkqTKBIeR2krPpP0S9lw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "823105288239-2c3ke5s5i4t5gtbre7paiock2kaasfi4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
