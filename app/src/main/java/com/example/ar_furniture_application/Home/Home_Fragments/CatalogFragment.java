@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.ar_furniture_application.ProductFragments.ProductFragment;
 import com.example.ar_furniture_application.R;
 
 /**
@@ -19,7 +20,7 @@ import com.example.ar_furniture_application.R;
  * Use the {@link CatalogFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class CatalogFragment extends Fragment implements ProductListsAdapter.OnItemClickListener{
+public class CatalogFragment extends Fragment implements CatalogAdapter.OnItemClickListener{
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -68,9 +69,8 @@ public class CatalogFragment extends Fragment implements ProductListsAdapter.OnI
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_products_list, container, false);
-        ProductListsAdapter productListsAdapter = new ProductListsAdapter(this);
+        CatalogAdapter productListsAdapter = new CatalogAdapter(this);
         RecyclerView recyclerView = view.findViewById(R.id.product_list_recyclerView);
-
         recyclerView.setAdapter(productListsAdapter);
 //        recyclerView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(),2));// Inflate the layout for this fragment
@@ -83,7 +83,7 @@ public class CatalogFragment extends Fragment implements ProductListsAdapter.OnI
     @Override
     public void onItemClick() {
         // Perform the fragment transaction to replace the fragment container with a new fragment
-        ProductPageFragment productPageFragment = new ProductPageFragment();
+        ProductFragment productFragment = new ProductFragment();
 
         // Pass data to the new fragment if needed
 //        Bundle bundle = new Bundle();
@@ -92,7 +92,7 @@ public class CatalogFragment extends Fragment implements ProductListsAdapter.OnI
 
         FragmentManager fragmentManager = getParentFragmentManager();
         fragmentManager.beginTransaction()
-                .replace(R.id.fragmentContainerView2, productPageFragment)
+                .replace(R.id.fragmentContainerView2, productFragment)
                 .setReorderingAllowed(true)
                 .addToBackStack("product") // Name can be null
                 .commit();

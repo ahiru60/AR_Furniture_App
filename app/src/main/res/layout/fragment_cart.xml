@@ -9,6 +9,10 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="cart" />
+        android:gravity="center_horizontal"
+        android:paddingTop="15sp"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:text="Cart" />
 
 </FrameLayout>

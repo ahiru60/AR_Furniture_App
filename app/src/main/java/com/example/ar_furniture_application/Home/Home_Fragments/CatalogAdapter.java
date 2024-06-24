@@ -11,22 +11,22 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ar_furniture_application.R;
 
-public class ProductListsAdapter extends RecyclerView.Adapter<ProductListsAdapter.ProductListsViewHolder> {
+public class CatalogAdapter extends RecyclerView.Adapter<CatalogAdapter.ProductListsViewHolder> {
     private OnItemClickListener onItemClickListener;
-    public ProductListsAdapter(OnItemClickListener onItemClickListener){
+    public CatalogAdapter(OnItemClickListener onItemClickListener){
 
         this.onItemClickListener = onItemClickListener;
     }
     @NonNull
     @Override
-    public ProductListsAdapter.ProductListsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public CatalogAdapter.ProductListsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.product_list_row, parent, false);
         return new ProductListsViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ProductListsAdapter.ProductListsViewHolder holder, int position) {
-        holder.text.setText("Hii");
+    public void onBindViewHolder(@NonNull CatalogAdapter.ProductListsViewHolder holder, int position) {
+        holder.text.setText("Product Name");
         holder.itemView.setOnClickListener(v -> onItemClickListener.onItemClick());
     }
 
