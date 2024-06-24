@@ -72,12 +72,15 @@ public class ProductFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_product, container, false);
         webView = view.findViewById(R.id.webView);
+
+
         webView.setInitialScale(110);
         WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(true);
         webSettings.setAllowFileAccess(true);
         webSettings.setDomStorageEnabled(true);
         webSettings.setDisplayZoomControls(true);
+
 
         webView.setWebViewClient(new WebViewClient() {
             @Override
