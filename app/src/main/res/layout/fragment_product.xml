@@ -1,103 +1,93 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@android:color/white">
-
-
-    <ImageView
+    android:fillViewport="true">
+`    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:src="@drawable/img_sample_product"
-        android:scaleType="centerCrop"
-        android:contentDescription="Product Image" />
-    <WebView
-        android:id="@+id/webView"
-        android:layout_width="match_parent"
-        android:hardwareAccelerated="true"
-        android:layout_height="200dp" />
-
-    <!-- Product Details -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="10dp">
+        android:background="@android:color/white">
 
-        <TextView
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:src="@drawable/img_sample_product"
+            android:scaleType="centerCrop"
+            android:contentDescription="Product Image" />
+        <WebView
+            android:id="@+id/webView"
+            android:layout_width="match_parent"
+            android:hardwareAccelerated="true"
+            android:layout_height="200dp" />
+
+        <!-- Product Details -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Stylish Modern Sofa"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:orientation="vertical"
+            android:padding="10dp">
 
-        <TextView
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Stylish Modern Sofa"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="$399.00"
+                android:textSize="16sp"
+                android:textColor="@android:color/holo_red_dark" />
+
+            <RatingBar
+                android:id="@+id/myRatingBar"
+                style="?android:attr/ratingBarStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:numStars="5"
+                android:rating="3"
+                android:isIndicator="true" />
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="This stylish modern sofa is perfect for any living room. It comes with comfortable cushions and a sleek design." />
+        </LinearLayout>
+
+        <!-- Action Buttons -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="$399.00"
-            android:textSize="16sp"
-            android:textColor="@android:color/holo_red_dark" />
+            android:orientation="horizontal"
+            android:gravity="center">
 
-        <RatingBar
-            android:id="@+id/myRatingBar"
-            style="?android:attr/ratingBarStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:numStars="5"
-            android:rating="3"
-            android:isIndicator="true" />
+            <Button
+                android:id="@+id/ARbutton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="View in AR" />
 
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Add to Cart"
+                android:background="@drawable/background_round_edged_black_shape" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="This stylish modern sofa is perfect for any living room. It comes with comfortable cushions and a sleek design." />
-    </LinearLayout>
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Buy Now"
+                android:background="@drawable/background_round_edged_black_shape" />
+        </LinearLayout>
 
-    <!-- Action Buttons -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center">
-
-        <Button
-            android:id="@+id/ARbutton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="View in AR" />
-
-        <Button
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Add to Cart"
-            android:background="@drawable/background_round_edged_black_shape" />
-
-        <Button
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Buy Now"
-            android:background="@drawable/background_round_edged_black_shape" />
-    </LinearLayout>
-
-    <!-- Customer Reviews -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="8dp">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Customer Reviews"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
-        <!-- Sample Review -->
+        <!-- Customer Reviews -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -107,23 +97,38 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="John Doe"
-                android:textSize="16sp"
+                android:text="Customer Reviews"
+                android:textSize="18sp"
                 android:textStyle="bold" />
 
-            <RatingBar
-                android:id="@+id/commentRatingBar"
-                style="?android:attr/ratingBarStyleSmall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:numStars="5"
-                android:rating="3"
-                android:isIndicator="false" />
-
-            <TextView
+            <!-- Sample Review -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Great sofa, very comfortable and stylish. Highly recommended!" />
+                android:orientation="vertical"
+                android:padding="8dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="John Doe"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <RatingBar
+                    android:id="@+id/commentRatingBar"
+                    style="?android:attr/ratingBarStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:numStars="5"
+                    android:rating="3"
+                    android:isIndicator="false" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Great sofa, very comfortable and stylish. Highly recommended!" />
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
-</LinearLayout>
+</ScrollView>

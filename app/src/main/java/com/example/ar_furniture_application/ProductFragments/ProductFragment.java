@@ -15,7 +15,10 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Button;
 
+import com.example.ar_furniture_application.ARSessionActivity;
+import com.example.ar_furniture_application.LoginActivity;
 import com.example.ar_furniture_application.R;
 
 /**
@@ -30,6 +33,8 @@ public class ProductFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private WebView webView;
+
+    private Button ARButton;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -72,7 +77,7 @@ public class ProductFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_product, container, false);
         webView = view.findViewById(R.id.webView);
-
+        ARButton = view.findViewById(R.id.ARbutton);
 
         webView.setInitialScale(110);
         WebSettings webSettings = webView.getSettings();
@@ -95,6 +100,15 @@ public class ProductFragment extends Fragment {
 
         // Load a URL
         webView.loadUrl("https://lumalabs.ai/capture/deb6b430-bb50-4288-af15-ce79f674c8a2");
+
+
+        ARButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), ARSessionActivity.class);
+                startActivity(intent);
+            }
+        });
         return view;
     }
 }
