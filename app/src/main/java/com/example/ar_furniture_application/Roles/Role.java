@@ -3,7 +3,7 @@ package com.example.ar_furniture_application.Roles;
 public class Role {
     private String role;
     private String userId;
-    private String userName;
+    private String name;
     private String password;
     private String emailAddress;
     private String firstName;
@@ -13,17 +13,13 @@ public class Role {
     private String[] orderHistory;
 
     // Constructor
-    public Role(String userName, String password, String emailAddress, String firstName, String lastName, String phoneNumber, String address, String[] orderHistory) {
+    public Role(String name,String password, String emailAddress, String phoneNumber, String address,String role) {
         this.role = role;
-        this.userId = userId;
-        this.userName = userName;
+        this.name = name;
         this.password = password;
         this.emailAddress = emailAddress;
-        this.firstName = firstName;
-        this.lastName = lastName;
         this.phoneNumber = phoneNumber;
         this.address = address;
-        this.orderHistory = orderHistory;
     }
 
     // Getters and Setters
@@ -31,13 +27,13 @@ public class Role {
         return role;
     }
 
-    public String getUserId(){return userId;}
+    public String getUserEmail(){return emailAddress;}
     public String getUserName() {
-        return userName;
+        return name;
     }
 
     public void setUserName(String userName) {
-        this.userName = userName;
+        this.name = userName;
     }
 
     public String getPassword() {

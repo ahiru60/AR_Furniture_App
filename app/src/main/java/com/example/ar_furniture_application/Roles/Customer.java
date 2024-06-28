@@ -4,9 +4,8 @@ public class Customer extends Role {
     private String paymentInformation;
 
     // Constructor
-    public Customer(String userName, String password, String emailAddress, String firstName, String lastName, String phoneNumber, String address, String[] orderHistory, String paymentInformation) {
-        super(userName, password, emailAddress, firstName, lastName, phoneNumber, address, orderHistory);
-        this.paymentInformation = paymentInformation;
+    public Customer(String name, String password, String emailAddress, String phoneNumber, String address, String role) {
+        super(name, password, emailAddress, phoneNumber, address, role);
     }
 
     // Getters and Setters

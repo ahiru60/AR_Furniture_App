@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.ar_furniture_application.R;
+import com.example.ar_furniture_application.Sessions.UserSession;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -45,6 +46,7 @@ public class LoginManager {
     public void signIn() {
         Intent signInIntent = googleSignInClient.getSignInIntent();
         activity.startActivityForResult(signInIntent, RC_SIGN_IN);
+
     }
 
     public void handleActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -58,6 +60,7 @@ public class LoginManager {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
             firebaseAuthWithGoogle(account);
+
         } catch (ApiException e) {
             Log.w(TAG, "Google sign in failed", e);
         }

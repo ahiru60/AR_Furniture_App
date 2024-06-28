@@ -17,6 +17,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ar_furniture_application.R;
+import com.example.ar_furniture_application.Roles.Role;
+import com.example.ar_furniture_application.Sessions.UserSession;
+import com.example.ar_furniture_application.WebServices.ApiService;
+import com.example.ar_furniture_application.WebServices.RetrofitClient;
+import com.example.ar_furniture_application.WebServices.UserDoa;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -29,6 +34,12 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -85,7 +96,32 @@ public class LoginFragment extends Fragment {
         loginGoogle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                loginManager.signIn();
+
+
+                ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
+
+                Call<List<UserDoa>> call = apiService.getUserByEmail("someUserId");
+                call.enqueue(new Callback <List<UserDoa>>() {
+                    @Override
+                    public void onResponse(Call<List<UserDoa>> call, Response<List<UserDoa>> response) {
+                        if (response.isSuccessful()) {
+                            List<UserDoa> users = response.body();
+                            // Handle the response
+                            if(users.size() == 1){
+                                loginManager.signIn();
+                                new UserSession(getContext()).createSession(users.get(0));
+                            }
+
+                        } else {
+                            // Handle the error
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<UserDoa>> call, Throwable t) {
+                        // Handle the failure
+                    }
+                });
             }
         });
 
