@@ -7,8 +7,24 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.ar_furniture_application.R;
+import com.example.ar_furniture_application.Sessions.UserSession;
+import com.example.ar_furniture_application.WebServices.ApiService;
+import com.example.ar_furniture_application.WebServices.ErrorResponse;
+import com.example.ar_furniture_application.WebServices.Hashing;
+import com.example.ar_furniture_application.WebServices.Models.UserRequestBody;
+import com.example.ar_furniture_application.WebServices.RetrofitClient;
+import com.google.gson.Gson;
+
+import java.io.IOException;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -60,7 +76,64 @@ public class SignUpFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_sign_up, container, false);
+        View view = inflater.inflate(R.layout.fragment_sign_up, container, false);
+
+        Button signUp = view.findViewById(R.id.signupButton);
+        EditText name,email,password,rePassword;
+        name = view.findViewById(R.id.editTextName);
+        email = view.findViewById(R.id.editTextEmailAddress);
+        password = view.findViewById(R.id.editTextpassword);
+        rePassword = view.findViewById(R.id.editTextRepeat_password);
+
+
+        signUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(password.getText().toString().equals(rePassword.getText().toString())){
+                    Hashing hasher = new Hashing();
+                    String passwordHash = hasher.hashPassword(password.getText().toString());
+                ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
+
+                UserRequestBody loginRequest = new UserRequestBody(name.getText().toString(), email.getText().toString(), passwordHash, "customer");
+                Call<User> call = apiService.createUser(loginRequest);
+                call.enqueue(new Callback<User>() {
+                    @Override
+                    public void onResponse(Call<User> call, Response<User> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            UserSession userSession = new UserSession(getContext());
+                            userSession.createSession(response.body());
+                            Toast.makeText(getContext(), "Signed up successfully", Toast.LENGTH_SHORT).show();
+
+                        } else {
+                            try {
+                                // Convert the error body to a string
+                                Gson gson = new Gson();
+                                ErrorResponse errorResponse = gson.fromJson(response.errorBody().string(), ErrorResponse.class);
+                                String errorMessage = errorResponse.getError();
+                                Toast.makeText(getContext(), "Failed to get signup :" + errorMessage, Toast.LENGTH_SHORT).show();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                                Toast.makeText(getContext(), "Failed to get signup and parse error body", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<User> call, Throwable t) {
+                        Toast.makeText(getContext(), "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+            }
+                else{
+                    Toast.makeText(getContext(), "Passwords don't match", Toast.LENGTH_SHORT).show();
+                }
+        }
+        }
+
+        );
+
+        return view;
     }
 }

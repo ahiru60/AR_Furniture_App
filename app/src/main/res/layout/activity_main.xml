@@ -8,32 +8,42 @@
 
     <!-- Container for fragments -->
 
-    <FrameLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <LinearLayout
             android:id="@+id/fragment_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="666dp"
+            android:layout_marginBottom="5dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
 
             <androidx.fragment.app.FragmentContainerView
                 android:id="@+id/fragmentContainerView"
-                android:name="com.example.ar_furniture_application.Home.Home_Fragments.HomeFragment"
+                android:name="com.example.ar_furniture_application.Home.Home_Fragments.CatalogFragment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
 
         </LinearLayout>
+
         <LinearLayout
+            android:id="@+id/linearLayout"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_gravity="bottom"
             android:background="@drawable/background_gradient_shape"
             android:gravity="center"
             android:orientation="horizontal"
-            >
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
 
             <ImageButton
                 android:id="@+id/home_imageBtn"
@@ -54,6 +64,7 @@
                 android:scaleType="centerInside"
                 android:src="@drawable/ic_search_white"
                 app:tint="@color/white"></ImageButton>
+
             <ImageButton
                 android:id="@+id/cart_imageBtn"
                 android:layout_width="100dp"
@@ -63,6 +74,7 @@
                 android:scaleType="centerInside"
                 android:src="@drawable/ic_cart"
                 app:tint="@color/white"></ImageButton>
+
             <ImageButton
                 android:id="@+id/profile_imageBtn"
                 android:layout_width="100dp"
@@ -75,7 +87,7 @@
 
 
         </LinearLayout>
-    </FrameLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!-- Bottom Navigation -->
 </RelativeLayout>

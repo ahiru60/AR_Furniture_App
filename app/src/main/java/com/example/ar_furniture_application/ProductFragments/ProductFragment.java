@@ -1,7 +1,6 @@
 package com.example.ar_furniture_application.ProductFragments;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -9,17 +8,23 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.ValueCallback;
-import android.webkit.WebChromeClient;
-import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.example.ar_furniture_application.ARSessionActivity;
-import com.example.ar_furniture_application.LoginActivity;
 import com.example.ar_furniture_application.R;
+import com.example.ar_furniture_application.WebServices.ApiService;
+import com.example.ar_furniture_application.WebServices.Models.CatItem;
+import com.example.ar_furniture_application.WebServices.RetrofitClient;
+
+import java.io.IOException;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -76,39 +81,79 @@ public class ProductFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_product, container, false);
-        webView = view.findViewById(R.id.webView);
-        ARButton = view.findViewById(R.id.ARbutton);
 
-        webView.setInitialScale(110);
-        WebSettings webSettings = webView.getSettings();
-        webSettings.setJavaScriptEnabled(true);
-        webSettings.setAllowFileAccess(true);
-        webSettings.setDomStorageEnabled(true);
-        webSettings.setDisplayZoomControls(true);
+        Bundle args = getArguments();
+        if (args != null) {
+            CatItem item = (CatItem) args.getSerializable("item");
+            if (item != null) {
+                // Use the item data as needed
+                String name = item.getName();
+                float rating = item.getRating();
+                String price = item.getPrice();
+                String stockQuantity = item.getStockQuantity();
 
 
-        webView.setWebViewClient(new WebViewClient() {
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-                view.loadUrl(request.getUrl().toString());
-                return true;
+
+                ARButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(getActivity(), ARSessionActivity.class);
+                        startActivity(intent);
+                    }
+                });
+
+
             }
-        });
 
-        // Enable debugging via Chrome DevTools
-        WebView.setWebContentsDebuggingEnabled(true);
+            webView = (WebView) view.findViewById(R.id.webView);
+            webView.setInitialScale(110);
+            ARButton = view.findViewById(R.id.ARbutton);
+            WebSettings webSettings = webView.getSettings();
+            webSettings.setJavaScriptEnabled(true);
+            webSettings.setAllowFileAccess(true);
+            webSettings.setDomStorageEnabled(true);
+            webSettings.setDisplayZoomControls(true);
+            webSettings.setBuiltInZoomControls(true);
+            webSettings.setSupportZoom(true);
+            webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
+            webSettings.setUseWideViewPort(true);
+            webSettings.setLoadWithOverviewMode(true);
+            webSettings.setSupportMultipleWindows(true);
+            webSettings.setAllowContentAccess(true);
+            webSettings.setGeolocationEnabled(true);
+            webSettings.setDefaultTextEncodingName("utf-8");
+            webView.setWebViewClient(new WebViewClient());
+            //webView.loadUrl("https://lumalabs.ai/capture/deb6b430-bb50-4288-af15-ce79f674c8a2");
 
-        // Load a URL
-        webView.loadUrl("https://lumalabs.ai/capture/deb6b430-bb50-4288-af15-ce79f674c8a2");
+            ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
+            Call<String> call;
+                call = apiService.getWebView();
+
+            call.enqueue(new Callback<String>() {
+                @Override
+                public void onResponse(Call<String> call, Response<String> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        webView.loadUrl("<p>hisdfhshkfshdfkjsdhfksdfhkjsdfhkjsdfhkjsdhfkjsdfhljksdhfljsdhfsdhfj</p>");
+                    } else {
+                        try {
+                            Toast.makeText(getContext(), "Failed to get products: " + response.errorBody().string(), Toast.LENGTH_SHORT).show();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            Toast.makeText(getContext(), "Failed to get products and parse error body", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<String> call, Throwable t) {
+                    Toast.makeText(getContext(), "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
 
 
-        ARButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), ARSessionActivity.class);
-                startActivity(intent);
-            }
-        });
+        }
+
+
         return view;
     }
 }

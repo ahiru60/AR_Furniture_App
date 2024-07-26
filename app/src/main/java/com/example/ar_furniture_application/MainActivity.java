@@ -10,6 +10,7 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
+import com.example.ar_furniture_application.Home.Home_Fragments.CatalogFragment;
 import com.example.ar_furniture_application.Home.Home_Fragments.HomeFragment;
 
 public class MainActivity extends AppCompatActivity {
@@ -37,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                // FragmentManager fragmentManager = getSupportFragmentManager();
                 fragmentManager.beginTransaction()
-                        .replace(R.id.fragmentContainerView, HomeFragment.class, null)
+                        .replace(R.id.fragmentContainerView, CatalogFragment.class, null)
                         .setReorderingAllowed(true)
                         .addToBackStack("home") // Name can be null
                         .commit();
@@ -80,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
                         .commit();
             }
         });
+
     }
 
 }

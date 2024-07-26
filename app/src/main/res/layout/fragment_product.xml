@@ -1,6 +1,6 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="668sp"
     android:fillViewport="true">
 `    <LinearLayout
         android:layout_width="match_parent"
@@ -15,11 +15,12 @@
             android:src="@drawable/img_sample_product"
             android:scaleType="centerCrop"
             android:contentDescription="Product Image" />
-        <WebView
-            android:id="@+id/webView"
-            android:layout_width="match_parent"
-            android:hardwareAccelerated="true"
-            android:layout_height="200dp" />
+    <WebView
+        android:id="@+id/webView"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:hardwareAccelerated="true"
+        />
 
         <!-- Product Details -->
         <LinearLayout
@@ -29,6 +30,7 @@
             android:padding="10dp">
 
             <TextView
+                android:id="@+id/editTextName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Stylish Modern Sofa"
@@ -36,6 +38,7 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/editTextPrice"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="$399.00"
@@ -53,6 +56,7 @@
 
 
             <TextView
+                android:id="@+id/editTextDescription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="This stylish modern sofa is perfect for any living room. It comes with comfortable cushions and a sleek design." />

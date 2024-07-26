@@ -1,41 +1,27 @@
 package com.example.ar_furniture_application.Login.LoginFragments;
 
-import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
+import androidx.fragment.app.FragmentManager;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.ar_furniture_application.R;
-import com.example.ar_furniture_application.Roles.Role;
 import com.example.ar_furniture_application.Sessions.UserSession;
 import com.example.ar_furniture_application.WebServices.ApiService;
+import com.example.ar_furniture_application.WebServices.ErrorResponse;
+import com.example.ar_furniture_application.WebServices.Hashing;
+import com.example.ar_furniture_application.WebServices.Models.UserRequestBody;
 import com.example.ar_furniture_application.WebServices.RetrofitClient;
-import com.example.ar_furniture_application.WebServices.UserDoa;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.api.ApiException;
-import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.google.gson.Gson;
 
-import java.util.List;
+import java.io.IOException;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -55,6 +41,10 @@ public class LoginFragment extends Fragment {
 
     private String mParam1;
     private String mParam2;
+
+    Button loginButton;
+    View signUp;
+    EditText email, password;
 
 
     public LoginFragment() {
@@ -87,69 +77,67 @@ public class LoginFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_login, container, false);
 
-        LinearLayout loginGoogle = view.findViewById(R.id.login_google);
-        TextView signup = view.findViewById(R.id.signup);
-        TextView forgotPwd = view.findViewById(R.id.forgot_password);
+        email = view.findViewById(R.id.loginEditTextEmailAddress);
+        password = view.findViewById(R.id.loginEditTextTextPassword);
 
-        LoginManager loginManager = new LoginManager(getString(R.string.web_id),getActivity());
+        loginButton = view.findViewById(R.id.login_button);
 
-        loginGoogle.setOnClickListener(new View.OnClickListener() {
+        loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-
-
+            public void onClick(View v) {
                 ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
+                Hashing hasher = new Hashing();
+                String passwordHash = hasher.hashPassword(password.getText().toString());
+                UserRequestBody loginRequest = new UserRequestBody(email.getText().toString(), passwordHash);
+                Call<User> call = apiService.getUserLoginAuth(loginRequest);
 
-                Call<List<UserDoa>> call = apiService.getUserByEmail("someUserId");
-                call.enqueue(new Callback <List<UserDoa>>() {
+                call.enqueue(new Callback<User>() {
                     @Override
-                    public void onResponse(Call<List<UserDoa>> call, Response<List<UserDoa>> response) {
-                        if (response.isSuccessful()) {
-                            List<UserDoa> users = response.body();
-                            // Handle the response
-                            if(users.size() == 1){
-                                loginManager.signIn();
-                                new UserSession(getContext()).createSession(users.get(0));
-                            }
+                    public void onResponse(Call<User> call, Response<User> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                                UserSession userSession = new UserSession(getContext());
+                               userSession.createSession(response.body());
+                                Toast.makeText(getContext(), "Logged in successfully", Toast.LENGTH_SHORT).show();
 
                         } else {
-                            // Handle the error
+                            try {
+                                // Convert the error body to a string
+                                Gson gson = new Gson();
+                                ErrorResponse errorResponse = gson.fromJson(response.errorBody().string(), ErrorResponse.class);
+                                String errorMessage = errorResponse.getError();
+                                Toast.makeText(getContext(), "Failed to login :" + errorMessage, Toast.LENGTH_SHORT).show();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                                Toast.makeText(getContext(), "Failed to get login and parse error body", Toast.LENGTH_SHORT).show();
+                            }
                         }
                     }
 
                     @Override
-                    public void onFailure(Call<List<UserDoa>> call, Throwable t) {
-                        // Handle the failure
+                    public void onFailure(Call<User> call, Throwable t) {
+                        Toast.makeText(getContext(), "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
+
             }
         });
+
+        View signup = view.findViewById(R.id.signup);
 
         signup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SignUpFragment signUpFragment = new SignUpFragment();
-                FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragmentContainerView3, signUpFragment);
-                transaction.addToBackStack(null);
-                transaction.commit();
-            }
-        });
-
-        forgotPwd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ForgotPwdFragment forgotPwdFragment = new ForgotPwdFragment();
-                FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragmentContainerView3, forgotPwdFragment);
-                transaction.addToBackStack(null);
-                transaction.commit();
+                FragmentManager fragmentManager = getParentFragmentManager();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.fragmentContainerView3, SignUpFragment.class, null)
+                        .setReorderingAllowed(true)
+                        .addToBackStack("profile") // Name can be null
+                        .commit();
             }
         });
 
         return view;
     }
-
 
 
 

@@ -26,9 +26,8 @@
             android:gravity="center_horizontal"
             android:orientation="vertical">
 
-
             <EditText
-                android:id="@+id/editTextTextEmailAddress"
+                android:id="@+id/editTextName"
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
                 android:background="@drawable/background_round_edged_grey_shape"
@@ -36,11 +35,22 @@
                 android:paddingVertical="6sp"
                 android:layout_marginTop="35sp"
                 android:layout_marginBottom="15sp"
+                android:hint="name"
+                android:inputType="textEmailAddress" />
+
+            <EditText
+                android:id="@+id/editTextEmailAddress"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:background="@drawable/background_round_edged_grey_shape"
+                android:paddingHorizontal="15sp"
+                android:paddingVertical="6sp"
+                android:layout_marginBottom="15sp"
                 android:hint="e-mail"
                 android:inputType="textEmailAddress" />
 
             <EditText
-                android:id="@+id/password"
+                android:id="@+id/editTextpassword"
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
                 android:background="@drawable/background_round_edged_grey_shape"
@@ -50,7 +60,7 @@
                 android:hint="password"
                 android:inputType="textPassword" />
             <EditText
-                android:id="@+id/repeat_password"
+                android:id="@+id/editTextRepeat_password"
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
                 android:background="@drawable/background_round_edged_grey_shape"
