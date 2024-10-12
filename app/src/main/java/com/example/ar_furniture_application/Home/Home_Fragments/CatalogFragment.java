@@ -1,6 +1,12 @@
 package com.example.ar_furniture_application.Home.Home_Fragments;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -10,18 +16,14 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
-import android.widget.Toast;
-
+import com.example.ar_furniture_application.Adapters.CatalogAdapter;
+import com.example.ar_furniture_application.Models.Sessions.UserSession;
 import com.example.ar_furniture_application.ProductFragments.ProductFragment;
 import com.example.ar_furniture_application.R;
-import com.example.ar_furniture_application.Sessions.UserSession;
 import com.example.ar_furniture_application.WebServices.ApiService;
-import com.example.ar_furniture_application.WebServices.Models.CatItem;
 import com.example.ar_furniture_application.WebServices.ErrorResponse;
+import com.example.ar_furniture_application.WebServices.Models.CartItem;
+import com.example.ar_furniture_application.WebServices.Models.CatItem;
 import com.example.ar_furniture_application.WebServices.Models.UserRequestBody;
 import com.example.ar_furniture_application.WebServices.RetrofitClient;
 import com.google.gson.Gson;
@@ -38,7 +40,7 @@ import retrofit2.Response;
  * Use the {@link CatalogFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class CatalogFragment extends Fragment implements CatalogAdapter.OnItemClickListener{
+public class CatalogFragment extends Fragment implements CatalogAdapter.OnClickListener {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -50,7 +52,11 @@ public class CatalogFragment extends Fragment implements CatalogAdapter.OnItemCl
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    CatalogAdapter productListsAdapter;
+    TextView message;
+    private CatalogAdapter productListsAdapter;
+    private ProgressBar progressBar;
+    private RecyclerView recyclerView;
+
 
     public CatalogFragment() {
         // Required empty public constructor
@@ -85,34 +91,32 @@ public class CatalogFragment extends Fragment implements CatalogAdapter.OnItemCl
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_products_list, container, false);
-        TextView message = view.findViewById(R.id.message);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_catalog, container, false);
+        progressBar = view.findViewById(R.id.progressBar);
+        message = view.findViewById(R.id.message_catalog);
+        recyclerView = view.findViewById(R.id.catalog_recyclerView);
         productListsAdapter = new CatalogAdapter(this);
-        RecyclerView recyclerView = view.findViewById(R.id.search_product_list_recyclerView);
         loadData(new DataCallback() {
             @Override
             public void onDataLoaded(List<CatItem> catItems) {
                 // Handle the loaded data here
                 // For example, set it to your adapter
                 productListsAdapter.setCatItems(catItems);
-                RecyclerView recyclerView = view.findViewById(R.id.search_product_list_recyclerView);
                 recyclerView.setAdapter(productListsAdapter);
             }
 
             @Override
             public void onDataError(String errorMessage) {
                 Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
-                message.setText(errorMessage);
-                RecyclerView recyclerView = view.findViewById(R.id.search_product_list_recyclerView);
+                //message.setText(errorMessage);
                 recyclerView.setAdapter(null);
             }
         });
 
         recyclerView.setAdapter(productListsAdapter);
 //        recyclerView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        recyclerView.setLayoutManager(new GridLayoutManager(getContext(),2));// Inflate the layout for this fragment
+        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));// Inflate the layout for this fragment
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
@@ -129,49 +133,90 @@ public class CatalogFragment extends Fragment implements CatalogAdapter.OnItemCl
     }
 
     @Override
-    public void onItemClick(CatItem item) {
+    public void onItemClickItem(CatItem item) {
         // Perform the fragment transaction to replace the fragment container with a new fragment
         ProductFragment productFragment = new ProductFragment();
-
-        // Pass data to the new fragment if needed
-//        Bundle bundle = new Bundle();
-//        bundle.putString("productName", product.getName());
-//        diagReportFragment.setArguments(bundle);
-
         Bundle args = new Bundle();
-        args.putSerializable("product",item);
+        args.putSerializable("item", item);
 
-// Set the arguments to the fragment
+        // Set the arguments to the fragment
         productFragment.setArguments(args);
 
         FragmentManager fragmentManager = getParentFragmentManager();
-        fragmentManager.beginTransaction()
-                .add(R.id.fragmentContainerView, productFragment)
+        fragmentManager.beginTransaction().add(R.id.fragmentContainerView, productFragment)
                 .setReorderingAllowed(true)
                 .addToBackStack("product") // Name can be null
                 .commit();
+    }
+
+    @Override
+    public void onAddToCartClick(CatItem item){
+        ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
+        UserSession session = new UserSession(getContext());
+        Call<CartItem> call;
+        UserSession userSession = new UserSession(getContext());
+        if(userSession.getCurrentUser() != null){
+        CartItem cartItem = new CartItem(userSession.getCurrentUser().getCartID(),item.getFurnitureID(),"1", item.getPrice());
+        call = apiService.addCartItem(cartItem);
+        call.enqueue(new Callback<CartItem>() {
+            @Override
+            public void onResponse(Call<CartItem> call, Response<CartItem> response) {
+
+                if (response.isSuccessful() && response.body() != null) {
+                    Toast.makeText(getContext(),"Item added to cart",Toast.LENGTH_SHORT);
+                } else {
+                    try {
+                        // Convert the error body to a string
+                        String errorMessage = response.errorBody().string();
+                        Toast.makeText(getContext(), "Failed to add item :" + errorMessage, Toast.LENGTH_SHORT).show();
+                        System.out.println(errorMessage);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        Toast.makeText(getContext(), "Failed to get add item and parse error body", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CartItem> call, Throwable t) {
+                Toast.makeText(getContext(),"Error: " + t.getMessage(),Toast.LENGTH_SHORT).show();
+            }
+        });}
+        else {
+
+            Toast.makeText(getContext(),"user not logged in",Toast.LENGTH_LONG).show();
+        }
     }
 
     private void loadData(DataCallback callback) {
         ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
         UserSession session = new UserSession(getContext());
         Call<List<CatItem>> call;
-        if(session.getCurrentUser() != null){
+        if (session.getCurrentUser() != null) {
             UserRequestBody loginRequest = new UserRequestBody(session.getCurrentUser().getEmail());
-            call = apiService.getProducts(loginRequest);
-        }
-        else{
+            call = apiService.getProducts(/*loginRequest*/);
+        } else {
+
             call = apiService.getProducts();
         }
         call.enqueue(new Callback<List<CatItem>>() {
             @Override
             public void onResponse(Call<List<CatItem>> call, Response<List<CatItem>> response) {
                 if (response.isSuccessful() && response.body() != null) {
+                    progressBar.setVisibility(View.GONE);
+                    recyclerView.setVisibility(View.VISIBLE);
                     callback.onDataLoaded(response.body());
+                    System.out.println('k');
                 } else {
                     try {
+                        progressBar.setVisibility(View.GONE);
+                        message.setText("Failed to get products");
+                        message.setVisibility(View.VISIBLE);
                         callback.onDataError("Failed to get products: " + response.errorBody().string());
                     } catch (IOException e) {
+                        progressBar.setVisibility(View.GONE);
+                        message.setText("Failed to get products");
+                        message.setVisibility(View.VISIBLE);
                         e.printStackTrace();
                         callback.onDataError("Failed to get products and parse error body");
                     }
@@ -180,6 +225,9 @@ public class CatalogFragment extends Fragment implements CatalogAdapter.OnItemCl
 
             @Override
             public void onFailure(Call<List<CatItem>> call, Throwable t) {
+                progressBar.setVisibility(View.GONE);
+                message.setText("Failed to get products");
+                message.setVisibility(View.VISIBLE);
                 callback.onDataError("Error: " + t.getMessage());
             }
         });
@@ -188,6 +236,7 @@ public class CatalogFragment extends Fragment implements CatalogAdapter.OnItemCl
 
     public interface DataCallback {
         void onDataLoaded(List<CatItem> catItems);
+
         void onDataError(String errorMessage);
     }
 
@@ -197,18 +246,17 @@ public class CatalogFragment extends Fragment implements CatalogAdapter.OnItemCl
         ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
         UserSession session = new UserSession(getContext());
         Call<List<CatItem>> call;
-        if(session.getCurrentUser() != null){
+        if (session.getCurrentUser() != null) {
             UserRequestBody loginRequest = new UserRequestBody(session.getCurrentUser().getEmail());
-            call = apiService.getProducts(loginRequest);
-        }
-        else{
+            call = apiService.getProducts(/*loginRequest*/);
+        } else {
             call = apiService.getProducts();
         }
-        call.enqueue(new Callback <List<CatItem>>() {
+        call.enqueue(new Callback<List<CatItem>>() {
             @Override
-            public void onResponse(Call <List<CatItem>> call, Response<List<CatItem>> response) {
+            public void onResponse(Call<List<CatItem>> call, Response<List<CatItem>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                        productListsAdapter.addData(response.body());
+                    productListsAdapter.addData(response.body());
                 } else {
                     try {
                         // Convert the error body to a string

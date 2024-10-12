@@ -10,11 +10,12 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/dark_grey"
         android:orientation="vertical">
         <LinearLayout
             android:id="@+id/search_section"
             android:layout_width="match_parent"
-            android:layout_height="86dp"
+            android:layout_height="87dp"
             android:paddingHorizontal="20dp"
             android:background="@drawable/background_gradient_shape"
             android:fontFamily="sans-serif-black"
@@ -34,7 +35,7 @@
                 android:paddingHorizontal="15sp"
                 android:paddingVertical="6sp"
                 android:textColor="@color/white"
-                android:textColorHint="@color/white">
+                android:textColorHint="@color/plain_yellow">
 
             </AutoCompleteTextView>
 
@@ -48,10 +49,11 @@
                 android:background="#00FFFFFF"
                 android:scaleType="centerInside"
                 android:src="@drawable/ic_search_white"
-                app:layout_constraintVertical_bias="0.571" />
+                app:layout_constraintVertical_bias="0.571"
+                app:tint="@color/plain_yellow" />
         </LinearLayout>
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/search_product_list_recyclerView"
+            android:id="@+id/catalog_recyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
         <TextView

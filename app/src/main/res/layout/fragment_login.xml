@@ -1,25 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Login.LoginFragments.LoginFragment">
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="250sp"
             android:text="Welcome"
-            android:textSize="50sp"
-            android:textColor="@color/white"
+            android:textSize="45sp"
+            android:letterSpacing="0.16"
+            android:textColor="@color/plain_yellow"
             android:gravity="center"
+            android:textStyle="bold"
+            android:shadowColor="@color/black"
+            android:shadowRadius="9"
             android:background="@drawable/background_gradient_shape"/>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@color/dark_grey"
             android:paddingHorizontal="15sp"
             android:gravity="center_horizontal"
             android:orientation="vertical">
@@ -29,19 +35,23 @@
                 android:id="@+id/loginEditTextEmailAddress"
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
-                android:background="@drawable/background_round_edged_grey_shape"
-                android:paddingHorizontal="15sp"
-                android:paddingVertical="6dp"
                 android:layout_marginTop="35sp"
                 android:layout_marginBottom="15dp"
+                android:background="@drawable/background_round_edged_yelloshape"
                 android:hint="e-mail"
-                android:inputType="textEmailAddress" />
+                android:textColor="@color/white"
+                android:textColorHint="@color/white"
+                android:inputType="textEmailAddress"
+                android:paddingHorizontal="15sp"
+                android:paddingVertical="6dp" />
 
             <EditText
                 android:id="@+id/loginEditTextTextPassword"
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
-                android:background="@drawable/background_round_edged_grey_shape"
+                android:textColor="@color/white"
+                android:textColorHint="@color/white"
+                android:background="@drawable/background_round_edged_yelloshape"
                 android:paddingHorizontal="15sp"
                 android:paddingVertical="6dp"
                 android:hint="password"
@@ -53,8 +63,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
                 android:layout_marginTop="20sp"
-                android:backgroundTint="#1F1735"
+                android:background="@drawable/background_blue_gradient_round_shape"
                 android:text="Login"
+                android:textStyle="bold"
+                android:textColor="@color/plain_yellow"
                 android:textSize="17sp" />
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -64,6 +76,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Don't have an account? "
+                    android:textColor="@color/white"
                     android:textAlignment="center"
                     android:layout_marginVertical="5dp"/>
                 <TextView
@@ -80,6 +93,7 @@
                 android:layout_height="wrap_content"
                 android:text="Forgot password"
                 android:textAlignment="center"
+                android:textColor="@color/white"
                 android:layout_marginVertical="5dp"/>
             <TextView
                 android:layout_width="match_parent"
@@ -107,7 +121,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="13sp"
                     android:text="Continue with Google"
-                    android:textColor="@android:color/black"
+                    android:textColor="@android:color/white"
                     android:textSize="17sp"
                     android:textStyle="bold" />
 
@@ -125,5 +139,12 @@
         android:layout_gravity="bottom"
         android:paddingHorizontal="15sp"
         android:layout_marginVertical="20dp"/>
-
+    <ImageButton
+        android:id="@+id/close"
+        android:layout_width="42sp"
+        android:layout_height="42sp"
+        android:background="@color/transparent"
+        android:src="@drawable/ic_close"
+        android:layout_margin="10sp"
+        app:tint="@color/white" />
 </FrameLayout>

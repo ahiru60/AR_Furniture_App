@@ -1,28 +1,114 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="668sp"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/dark_grey"
     android:fillViewport="true">
 `    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:background="@android:color/white">
+        android:background="@color/dark_grey"
+        android:orientation="vertical">
 
 
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:src="@drawable/img_sample_product"
-            android:scaleType="centerCrop"
-            android:contentDescription="Product Image" />
-    <WebView
-        android:id="@+id/webView"
+    <HorizontalScrollView
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:hardwareAccelerated="true"
-        />
+        android:layout_height="wrap_content">
 
-        <!-- Product Details -->
+        <LinearLayout
+            android:id="@+id/imageLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <!-- CardView for Image 1 -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="3dp"
+                style="@style/CustomScrollBarStyle"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="4dp">
+
+                <ImageView
+                    android:id="@+id/image1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="250dp"
+                    android:contentDescription="Product Image"
+                    android:clipToOutline="true"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/img_sample_product" />
+
+            </androidx.cardview.widget.CardView>
+
+            <!-- CardView for Image 2 -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="250dp"
+                android:layout_marginHorizontal="3dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="4dp">
+
+                <ImageView
+                    android:id="@+id/image2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="250dp"
+                    android:contentDescription="Product Image"
+                    android:clipToOutline="true"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/img_sample_product" />
+
+            </androidx.cardview.widget.CardView>
+
+            <!-- CardView for Image 3 -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="250dp"
+                android:layout_marginHorizontal="3dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="4dp">
+
+                <ImageView
+                    android:id="@+id/image3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="250dp"
+                    android:contentDescription="Product Image"
+                    android:clipToOutline="true"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/img_sample_product" />
+
+            </androidx.cardview.widget.CardView>
+
+            <!-- CardView for WebView -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="350dp"
+                android:layout_height="250dp"
+                android:layout_marginHorizontal="3dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="4dp">
+
+<!--                <WebView-->
+<!--                    android:id="@+id/webView"-->
+<!--                    android:layout_width="350dp"-->
+<!--                    android:layout_height="250dp"-->
+<!--                    android:clipToOutline="true"-->
+<!--                    android:hardwareAccelerated="true" />-->
+                <com.example.ar_furniture_application.customizations.CustomWebView
+                    android:id="@+id/webView"
+                    android:layout_width="350dp"
+                    android:layout_height="match_parent"
+                    android:clipToOutline="true"
+                    android:hardwareAccelerated="true"
+                    />
+
+
+            </androidx.cardview.widget.CardView>
+
+        </LinearLayout>
+    </HorizontalScrollView>
+
+
+    <!-- Product Details -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -30,35 +116,43 @@
             android:padding="10dp">
 
             <TextView
-                android:id="@+id/editTextName"
+                android:id="@+id/itemName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingVertical="8dp"
+                android:letterSpacing="0.05"
                 android:text="Stylish Modern Sofa"
-                android:textSize="18sp"
+                android:textColor="@color/white"
+                android:textSize="28sp"
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/editTextPrice"
+                android:id="@+id/itemPrice"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingVertical="8dp"
                 android:text="$399.00"
-                android:textSize="16sp"
+                android:textSize="22sp"
+                android:textStyle="bold"
                 android:textColor="@android:color/holo_red_dark" />
 
             <RatingBar
-                android:id="@+id/myRatingBar"
+                android:id="@+id/ratingBar"
                 style="?android:attr/ratingBarStyleSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginVertical="16dp"
+                android:progressTint="@color/plain_yellow"
                 android:numStars="5"
                 android:rating="3"
                 android:isIndicator="true" />
 
 
             <TextView
-                android:id="@+id/editTextDescription"
+                android:id="@+id/itemDescription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="@color/white"
                 android:text="This stylish modern sofa is perfect for any living room. It comes with comfortable cushions and a sleek design." />
         </LinearLayout>
 
@@ -66,6 +160,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingVertical="13dp"
+            android:paddingHorizontal="7dp"
             android:orientation="horizontal"
             android:gravity="center">
 
@@ -74,21 +170,32 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:layout_marginHorizontal="5dp"
+                android:background="@drawable/background_orange_red_gradient_round_shape"
                 android:text="View in AR" />
 
             <Button
+                android:id="@+id/addToCart"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:layout_marginHorizontal="5dp"
                 android:text="Add to Cart"
-                android:background="@drawable/background_round_edged_black_shape" />
+                android:background="@drawable/background_blue_gradient_round_shape" />
 
             <Button
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:layout_marginHorizontal="5dp"
                 android:text="Buy Now"
-                android:background="@drawable/background_round_edged_black_shape" />
+                android:background="@drawable/background_blue_gradient_round_shape" />
         </LinearLayout>
 
         <!-- Customer Reviews -->
@@ -102,6 +209,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Customer Reviews"
+                android:layout_marginBottom="10dp"
+                android:textColor="@color/white"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
@@ -115,15 +224,18 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
                     android:text="John Doe"
                     android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:textColor="@color/white"/>
 
                 <RatingBar
                     android:id="@+id/commentRatingBar"
                     style="?android:attr/ratingBarStyleSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:progressTint="@color/plain_yellow"
                     android:numStars="5"
                     android:rating="3"
                     android:isIndicator="false" />
@@ -131,7 +243,15 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/white"
                     android:text="Great sofa, very comfortable and stylish. Highly recommended!" />
+            </LinearLayout>
+            <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:orientation="vertical"
+            android:padding="8dp">
+
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

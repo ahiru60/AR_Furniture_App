@@ -3,16 +3,20 @@ package com.example.ar_furniture_application.Login.LoginFragments;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.example.ar_furniture_application.Models.User;
 import com.example.ar_furniture_application.R;
-import com.example.ar_furniture_application.Sessions.UserSession;
+import com.example.ar_furniture_application.Models.Sessions.UserSession;
 import com.example.ar_furniture_application.WebServices.ApiService;
 import com.example.ar_furniture_application.WebServices.ErrorResponse;
 import com.example.ar_furniture_application.WebServices.Hashing;
@@ -77,10 +81,17 @@ public class SignUpFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_sign_up, container, false);
-
+        FragmentManager fragmentManager = getParentFragmentManager();
+        SignUpFragment signUpFragment = new SignUpFragment();
+        LoginFragment loginFragment = new LoginFragment();
         Button signUp = view.findViewById(R.id.signupButton);
-        EditText name,email,password,rePassword;
+        ImageButton close = view.findViewById(R.id.close);
+        EditText name,phone,addressLine1,addressLine2,addressLine3,email,password,rePassword;
         name = view.findViewById(R.id.editTextName);
+        phone = view.findViewById(R.id.editTextPhone);
+        addressLine1 = view.findViewById(R.id.editTextAddressLine1);
+        addressLine2 = view.findViewById(R.id.editTextAddressLine2);
+        addressLine3 = view.findViewById(R.id.editTextAddressLine3);
         email = view.findViewById(R.id.editTextEmailAddress);
         password = view.findViewById(R.id.editTextpassword);
         rePassword = view.findViewById(R.id.editTextRepeat_password);
@@ -94,8 +105,8 @@ public class SignUpFragment extends Fragment {
                     Hashing hasher = new Hashing();
                     String passwordHash = hasher.hashPassword(password.getText().toString());
                 ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
-
-                UserRequestBody loginRequest = new UserRequestBody(name.getText().toString(), email.getText().toString(), passwordHash, "customer");
+                String address = addressLine1.getText().toString()+", "+addressLine2.getText().toString()+", "+addressLine3.getText().toString()+".";
+                UserRequestBody loginRequest = new UserRequestBody(name.getText().toString(),phone.getText().toString(),address, email.getText().toString(), passwordHash, "customer");
                 Call<User> call = apiService.createUser(loginRequest);
                 call.enqueue(new Callback<User>() {
                     @Override
@@ -103,6 +114,11 @@ public class SignUpFragment extends Fragment {
                         if (response.isSuccessful() && response.body() != null) {
                             UserSession userSession = new UserSession(getContext());
                             userSession.createSession(response.body());
+                            FragmentTransaction trans = fragmentManager.beginTransaction();
+                            trans.remove(signUpFragment);
+                            trans.remove(loginFragment);
+                            trans.commit();
+                            fragmentManager.popBackStack();
                             Toast.makeText(getContext(), "Signed up successfully", Toast.LENGTH_SHORT).show();
 
                         } else {
@@ -133,6 +149,16 @@ public class SignUpFragment extends Fragment {
         }
 
         );
+
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentTransaction trans = fragmentManager.beginTransaction();
+                trans.remove(signUpFragment);
+                trans.commit();
+                fragmentManager.popBackStack();
+            }
+        });
 
         return view;
     }

@@ -1,6 +1,7 @@
 package com.example.ar_furniture_application;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -15,18 +16,23 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.ar_furniture_application.Home.Home_Fragments.CatalogAdapter;
+import com.example.ar_furniture_application.Adapters.CatalogAdapter;
 import com.example.ar_furniture_application.Home.Home_Fragments.CatalogFragment;
+import com.example.ar_furniture_application.Models.Sessions.UserSession;
 import com.example.ar_furniture_application.ProductFragments.ProductFragment;
 import com.example.ar_furniture_application.WebServices.ApiService;
+import com.example.ar_furniture_application.WebServices.ErrorResponse;
+import com.example.ar_furniture_application.WebServices.Models.CartItem;
 import com.example.ar_furniture_application.WebServices.Models.CatItem;
 import com.example.ar_furniture_application.WebServices.Models.Keyword;
 import com.example.ar_furniture_application.WebServices.RetrofitClient;
+import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -41,7 +47,7 @@ import retrofit2.Response;
  * Use the {@link SearchFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SearchFragment extends Fragment implements CatalogAdapter.OnItemClickListener{
+public class SearchFragment extends Fragment implements CatalogAdapter.OnClickListener {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -51,13 +57,13 @@ public class SearchFragment extends Fragment implements CatalogAdapter.OnItemCli
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    View searchSection;
-    AutoCompleteTextView searchEditText;
-    ArrayAdapter<String> arrayAdapter;
-    ImageButton topSearchImageButton;
-    TextView text;
-
-    WebView webView;
+    private View view,searchSection;
+    private AutoCompleteTextView searchEditText;
+    private ArrayAdapter<String> arrayAdapter;
+    private ImageButton topSearchImageButton;
+    private TextView text;
+    private WebView webView;
+    private RecyclerView recyclerView;
 
     CatalogAdapter productListsAdapter;
 
@@ -97,25 +103,18 @@ public class SearchFragment extends Fragment implements CatalogAdapter.OnItemCli
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_search, container, false);
-       searchSection = view.findViewById(R.id.search_section);
-       searchEditText=view.findViewById(R.id.searchEditText);
-       topSearchImageButton=view.findViewById(R.id.topSearchImageButton);
-       text =view.findViewById(R.id.text);
-
-        productListsAdapter = new CatalogAdapter(this);
+        view = inflater.inflate(R.layout.fragment_search, container, false);
+       setupViews();
         topSearchImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 hideKeyboard();
-                RecyclerView recyclerView = view.findViewById(R.id.search_product_list_recyclerView);
                 loadData(new CatalogFragment.DataCallback() {
                     @Override
                     public void onDataLoaded(List<CatItem> catItems) {
                         // Handle the loaded data here
                         // For example, set it to your adapter
                         productListsAdapter.setCatItems(catItems);
-                        RecyclerView recyclerView = view.findViewById(R.id.search_product_list_recyclerView);
                         recyclerView.setAdapter(productListsAdapter);
                     }
 
@@ -123,7 +122,6 @@ public class SearchFragment extends Fragment implements CatalogAdapter.OnItemCli
                     public void onDataError(String errorMessage) {
                         Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
                         text.setText(errorMessage);
-                        RecyclerView recyclerView = view.findViewById(R.id.search_product_list_recyclerView);
                         recyclerView.setAdapter(null);
                     }
                 });
@@ -177,6 +175,30 @@ public class SearchFragment extends Fragment implements CatalogAdapter.OnItemCli
                         Toast.makeText(getContext(),"Error: " + t.getMessage(),Toast.LENGTH_SHORT);
                     }
                 });
+
+                if(searchEditText.getText().toString().length()>0){
+                    loadData(new CatalogFragment.DataCallback() {
+                        @Override
+                        public void onDataLoaded(List<CatItem> catItems) {
+                            // Handle the loaded data here
+                            // For example, set it to your adapter
+                            productListsAdapter.setCatItems(catItems);
+                            recyclerView.setAdapter(productListsAdapter);
+                        }
+
+                        @Override
+                        public void onDataError(String errorMessage) {
+                            Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
+                            text.setText(errorMessage);
+                            recyclerView.setAdapter(null);
+                        }
+                    });
+
+                    recyclerView.setAdapter(productListsAdapter);
+//        recyclerView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+                    recyclerView.setLayoutManager(new GridLayoutManager(getContext(),2));// Inflate the layout for this fragment
+                }
+
             }
         });
 
@@ -194,8 +216,18 @@ public class SearchFragment extends Fragment implements CatalogAdapter.OnItemCli
         return view;
     }
 
+    private void setupViews() {
+        searchSection = view.findViewById(R.id.search_section);
+        searchEditText=view.findViewById(R.id.searchEditText);
+        topSearchImageButton=view.findViewById(R.id.topSearchImageButton);
+        text =view.findViewById(R.id.text);
+
+        productListsAdapter = new CatalogAdapter(this);
+        recyclerView = view.findViewById(R.id.catalog_recyclerView);
+    }
+
     @Override
-    public void onItemClick(CatItem item) {
+    public void onItemClickItem(CatItem item) {
         // Perform the fragment transaction to replace the fragment container with a new fragment
         ProductFragment productFragment = new ProductFragment();
 
@@ -205,7 +237,7 @@ public class SearchFragment extends Fragment implements CatalogAdapter.OnItemCli
 //        diagReportFragment.setArguments(bundle);
 
         Bundle args = new Bundle();
-        args.putSerializable("product",item);
+        args.putSerializable("item",item);
 
 // Set the arguments to the fragment
         productFragment.setArguments(args);
@@ -217,6 +249,42 @@ public class SearchFragment extends Fragment implements CatalogAdapter.OnItemCli
                 .addToBackStack("product") // Name can be null
                 .commit();
     }
+
+    @Override
+    public void onAddToCartClick(CatItem item){
+        ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
+        UserSession session = new UserSession(getContext());
+        Call<CartItem> call;
+        UserSession userSession = new UserSession(getContext());
+        CartItem cartItem = new CartItem(userSession.getCurrentUser().getCartID(),item.getFurnitureID(),"1", item.getPrice());
+        call = apiService.addCartItem(cartItem);
+        call.enqueue(new Callback<CartItem>() {
+            @Override
+            public void onResponse(Call<CartItem> call, Response<CartItem> response) {
+
+                if (response.isSuccessful() && response.body() != null) {
+                    Toast.makeText(getContext(),"Item added to cart",Toast.LENGTH_SHORT);
+                } else {
+                    try {
+                        // Convert the error body to a string
+                        Gson gson = new Gson();
+                        ErrorResponse errorResponse = gson.fromJson(response.errorBody().string(), ErrorResponse.class);
+                        String errorMessage = errorResponse.getError();
+                        Toast.makeText(getContext(), "Failed to add item :" + errorMessage, Toast.LENGTH_SHORT).show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        Toast.makeText(getContext(), "Failed to get add item and parse error body", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CartItem> call, Throwable t) {
+                Toast.makeText(getContext(),"Error: " + t.getMessage(),Toast.LENGTH_SHORT);
+            }
+        });
+    }
+
     private void hideKeyboard() {
         View view = getActivity().getCurrentFocus();
         if (view != null) {
@@ -260,15 +328,17 @@ public class SearchFragment extends Fragment implements CatalogAdapter.OnItemCli
 
         if(state==true){
             searchSection.setBackground(getActivity().getDrawable(R.drawable.background_transparent_shape));
-            searchEditText.setTextColor(getResources().getColor(R.color.black, null));
-            searchEditText.setHintTextColor(getResources().getColor(R.color.black, null));
-            searchEditText.setBackground(getActivity().getDrawable(R.drawable.background_round_edged_black_shape));
-            topSearchImageButton.setImageResource(R.drawable.ic_search_black);}
-        else{
-            searchSection.setBackground(getActivity().getDrawable(R.drawable.background_gradient_shape));
             searchEditText.setTextColor(getResources().getColor(R.color.white, null));
             searchEditText.setHintTextColor(getResources().getColor(R.color.white, null));
-            searchEditText.setBackground(getActivity().getDrawable(R.drawable.background_round_edged_white_shape));
-            topSearchImageButton.setImageResource(R.drawable.ic_search_white);}
+            searchEditText.setBackground(getActivity().getDrawable(R.drawable.background_round_edged_yelloshape));}
+        else{
+            searchSection.setBackground(getActivity().getDrawable(R.drawable.background_gradient_shape));
+            searchEditText.setTextColor(getResources().getColor(R.color.plain_yellow, null));
+            searchEditText.setHintTextColor(getResources().getColor(R.color.white, null));
+            searchEditText.setBackground(getActivity().getDrawable(R.drawable.background_round_edged_blue_gradient_shape));
+            //topSearchImageButton.setImageResource(R.drawable.ic_search_white);}
+            Drawable topSearchImagebuttonDrawable = topSearchImageButton.getDrawable();
+            topSearchImagebuttonDrawable = DrawableCompat.wrap(topSearchImagebuttonDrawable);
+            DrawableCompat.setTint(topSearchImagebuttonDrawable, getResources().getColor(R.color.plain_yellow));}
     }
 }

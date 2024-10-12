@@ -4,11 +4,19 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
+
+import com.example.ar_furniture_application.Home.Home_Fragments.CatalogFragment;
+import com.example.ar_furniture_application.Home.Home_Fragments.HomeFragment;
+import com.example.ar_furniture_application.Login.LoginFragments.LoginFragment;
+import com.example.ar_furniture_application.Models.Sessions.UserSession;
+import com.example.ar_furniture_application.Models.User;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -22,7 +30,11 @@ public class ProfileFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    private Button login;
+    private Button login,logout;
+    private TextView text;
+    private UserSession userSession;
+    private View view;
+    private FragmentManager fragmentManager;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -56,7 +68,6 @@ public class ProfileFragment extends Fragment {
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
-
         }
     }
 
@@ -64,20 +75,57 @@ public class ProfileFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        view = inflater.inflate(R.layout.fragment_profile, container, false);
+       setupViews();
+       setupBtnClicks();
+        return view;
+    }
 
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_profile, container, false);
-        login = view.findViewById(R.id.login);
-
+    private void setupBtnClicks() {
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), LoginActivity.class);
-                startActivity(intent);
+//                Intent intent = new Intent(getActivity(), LoginActivity.class);
+//                startActivity(intent);
+                fragmentManager.beginTransaction()
+                        .replace(R.id.fragmentContainerView, LoginFragment.class, null)
+                        .setReorderingAllowed(true)
+                        .addToBackStack("login") // Name can be null
+                        .commit();
             }
         });
 
-        return view;
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                userSession.logout();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.fragmentContainerView, CatalogFragment.class, null)
+                        .setReorderingAllowed(true)
+                        .addToBackStack("home") // Name can be null
+                        .commit();
+
+            }
+        });
+
+    }
+
+    private void setupViews() {
+        fragmentManager = getParentFragmentManager();
+        login = view.findViewById(R.id.login);
+        logout = view.findViewById(R.id.logout);
+        text = view.findViewById(R.id.text);
+        userSession = new UserSession(getContext());
+        User user = userSession.getCurrentUser();
+        if(user!= null){
+            text.setText("Welcome "+ user.getName()+"!");
+            logout.setVisibility(View.VISIBLE);
+            login.setVisibility(View.GONE);
+        }
+        else {
+            logout.setVisibility(View.GONE);
+            login.setVisibility(View.VISIBLE);
+        }
     }
 
 }

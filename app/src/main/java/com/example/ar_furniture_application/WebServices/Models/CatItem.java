@@ -1,20 +1,38 @@
 package com.example.ar_furniture_application.WebServices.Models;
 
+import com.google.gson.annotations.Expose;
+
 import java.io.Serializable;
+import java.util.List;
 
 public class CatItem implements Serializable {
-
+    private String FurnitureID;
     private String Name;
     private String Description;
     private String Price;
     private String Rating;
     private String Categoty;
     private String StockQuantity;
-    private String ImageURL;
+    @Expose
+    private List<String> ImageURLs;
     private String Material;
     private String Dimensions;
     private String Weight;
+    private String objectURL;
 
+    // Additional fields for ar_visualization table
+    private String slug;
+    private String ModelURL;
+    private String texturesURL;
+
+    // Getters for existing fields
+    public String getObjectURL() {
+        return objectURL;
+    }
+
+    public String getFurnitureID() {
+        return FurnitureID;
+    }
 
     public String getName() {
         return Name;
@@ -40,8 +58,8 @@ public class CatItem implements Serializable {
         return StockQuantity;
     }
 
-    public String getImageURL() {
-        return ImageURL;
+    public List<String> getImageURLs() {
+        return ImageURLs;
     }
 
     public String getMaterial() {
@@ -56,7 +74,16 @@ public class CatItem implements Serializable {
         return Weight;
     }
 
+    // Getters for the additional fields
+    public String getSlug() {
+        return slug;
+    }
 
+    public String getModelURL() {
+        return ModelURL;
+    }
 
-
+    public String getTexturesURL() {
+        return texturesURL;
+    }
 }

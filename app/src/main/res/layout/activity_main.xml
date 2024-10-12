@@ -2,6 +2,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root_layout"
+    android:background="@color/dark_grey"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
@@ -18,19 +19,15 @@
             android:layout_height="666dp"
             android:layout_marginBottom="5dp"
             android:orientation="vertical"
-            app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+            android:background="@color/dark_grey"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
-
-
             <androidx.fragment.app.FragmentContainerView
                 android:id="@+id/fragmentContainerView"
                 android:name="com.example.ar_furniture_application.Home.Home_Fragments.CatalogFragment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
-
-
         </LinearLayout>
 
         <LinearLayout
@@ -38,7 +35,7 @@
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_gravity="bottom"
-            android:background="@drawable/background_gradient_shape"
+            android:background="@color/dark_grey"
             android:gravity="center"
             android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -84,7 +81,6 @@
                 android:scaleType="centerInside"
                 android:src="@drawable/ic_profile"
                 app:tint="@color/white"></ImageButton>
-
 
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>

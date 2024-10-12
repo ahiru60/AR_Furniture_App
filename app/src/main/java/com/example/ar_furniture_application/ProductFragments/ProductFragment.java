@@ -5,22 +5,34 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RatingBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ar_furniture_application.ARSessionActivity;
+import com.example.ar_furniture_application.Models.CaptureResponse;
+import com.example.ar_furniture_application.Models.Sessions.UserSession;
 import com.example.ar_furniture_application.R;
 import com.example.ar_furniture_application.WebServices.ApiService;
+import com.example.ar_furniture_application.WebServices.Models.CartItem;
 import com.example.ar_furniture_application.WebServices.Models.CatItem;
 import com.example.ar_furniture_application.WebServices.RetrofitClient;
+import com.example.ar_furniture_application.customizations.CustomWebView;
+import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
+import java.io.Serializable;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -37,9 +49,16 @@ public class ProductFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    private WebView webView;
+    private CustomWebView webView;
+    private CatItem item;
+    private LinearLayout linearLayout;
+    private ImageView image1,image2,image3;
+    private TextView itemName,itemPrice,itemDescription;
+    public RatingBar ratingBar;
+    private Bundle args;
+    private CaptureResponse captureResponse;
 
-    private Button ARButton;
+    private Button ARButton,addToCart;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -58,11 +77,12 @@ public class ProductFragment extends Fragment {
      * @return A new instance of fragment ProductFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ProductFragment newInstance(String param1, String param2) {
+    public static ProductFragment newInstance(String param1, String param2, Serializable item) {
         ProductFragment fragment = new ProductFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
+        args.putSerializable("item",item);
         fragment.setArguments(args);
         return fragment;
     }
@@ -82,78 +102,144 @@ public class ProductFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_product, container, false);
 
-        Bundle args = getArguments();
-        if (args != null) {
-            CatItem item = (CatItem) args.getSerializable("item");
+            args = getArguments();
+            item = (CatItem) args.getSerializable("item");
             if (item != null) {
+
+                ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
+                Call<CaptureResponse> call;
+                call = apiService.getCaptureBySlug(item.getSlug());
+
+                call.enqueue(new Callback<CaptureResponse>() {
+                    @Override
+                    public void onResponse(Call<CaptureResponse> call, Response<CaptureResponse> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            captureResponse = response.body();
+                            webView = (CustomWebView) view.findViewById(R.id.webView);
+
+                            webView.setInitialScale(110);
+                            WebSettings webSettings = webView.getSettings();
+                            webSettings.setJavaScriptEnabled(true);
+                            webSettings.setAllowFileAccess(true);
+                            webSettings.setDomStorageEnabled(true);
+                            webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
+                            webSettings.setUseWideViewPort(true);
+                            webSettings.setLoadWithOverviewMode(true);
+                            webSettings.setAllowContentAccess(true);
+                            webSettings.setGeolocationEnabled(true);
+                            webSettings.setDefaultTextEncodingName("utf-8");
+                            webView.setWebViewClient(new WebViewClient());
+                            if(captureResponse.getEditUrl() != null){
+                                webView.loadUrl(captureResponse.getEditUrl());
+                            }else{
+
+                            }
+
+
+                        } else {
+                            try {
+                                Toast.makeText(getContext(),"Failed to get products: " + response.errorBody().string(),Toast.LENGTH_SHORT).show();
+                                Log.d("TAG", "onResponse: "+response.errorBody().string());
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                                Toast.makeText(getContext(),"Failed to get products and parse error body",Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<CaptureResponse> call, Throwable t) {
+                        Toast.makeText(getContext(),"Error: " + t.getMessage(),Toast.LENGTH_SHORT).show();
+                    }
+                });
                 // Use the item data as needed
                 String name = item.getName();
                 float rating = item.getRating();
                 String price = item.getPrice();
                 String stockQuantity = item.getStockQuantity();
 
+                itemName = view.findViewById(R.id.itemName);
+                itemPrice = view.findViewById(R.id.itemPrice);
+                ratingBar = view.findViewById(R.id.ratingBar);
+                itemDescription = view.findViewById(R.id.itemDescription);
 
 
-                ARButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent intent = new Intent(getActivity(), ARSessionActivity.class);
-                        startActivity(intent);
-                    }
-                });
 
+                linearLayout = view.findViewById(R.id.imageLayout);
+                image1 = view.findViewById(R.id.image1);
+                image2 = view.findViewById(R.id.image2);
+                image3 = view.findViewById(R.id.image3);
+                ImageView [] imageViews = { image1,image2,image3};
+                int i = 0;
+                for(String imageURL : item.getImageURLs()){
+                    ImageView imageView = new ImageView(getContext());
+                    Picasso.get().load(imageURL)
+                            .into(imageViews[i]);
+                    linearLayout.addView(imageView);
+                    i++;
+                }
 
+                itemName.setText(item.getName());
+
+                itemPrice.setText(item.getPrice()+"$");
+                itemDescription.setText(item.getDescription());
             }
 
-            webView = (WebView) view.findViewById(R.id.webView);
-            webView.setInitialScale(110);
+
             ARButton = view.findViewById(R.id.ARbutton);
-            WebSettings webSettings = webView.getSettings();
-            webSettings.setJavaScriptEnabled(true);
-            webSettings.setAllowFileAccess(true);
-            webSettings.setDomStorageEnabled(true);
-            webSettings.setDisplayZoomControls(true);
-            webSettings.setBuiltInZoomControls(true);
-            webSettings.setSupportZoom(true);
-            webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
-            webSettings.setUseWideViewPort(true);
-            webSettings.setLoadWithOverviewMode(true);
-            webSettings.setSupportMultipleWindows(true);
-            webSettings.setAllowContentAccess(true);
-            webSettings.setGeolocationEnabled(true);
-            webSettings.setDefaultTextEncodingName("utf-8");
-            webView.setWebViewClient(new WebViewClient());
-            //webView.loadUrl("https://lumalabs.ai/capture/deb6b430-bb50-4288-af15-ce79f674c8a2");
-
-            ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
-            Call<String> call;
-                call = apiService.getWebView();
-
-            call.enqueue(new Callback<String>() {
+            addToCart = view.findViewById(R.id.addToCart);
+            ARButton.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onResponse(Call<String> call, Response<String> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        webView.loadUrl("<p>hisdfhshkfshdfkjsdhfksdfhkjsdfhkjsdfhkjsdhfkjsdfhljksdhfljsdhfsdhfj</p>");
-                    } else {
-                        try {
-                            Toast.makeText(getContext(), "Failed to get products: " + response.errorBody().string(), Toast.LENGTH_SHORT).show();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                            Toast.makeText(getContext(), "Failed to get products and parse error body", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<String> call, Throwable t) {
-                    Toast.makeText(getContext(), "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                public void onClick(View v) {
+                    //webView.loadUrl("");
+                    //webView.setVisibility(View.GONE);
+                    Intent intent = new Intent(getActivity(), ARSessionActivity.class);
+                    intent.putExtra("furnitureName", item.getName());
+                    intent.putExtra("modelURL", captureResponse.getLatestRun().getArtifacts().get(6).getUrl());
+                    intent.putExtra("scaleToWorld", captureResponse.getLatestRun().getArtifacts().get(6).getScale_to_world());
+                    startActivity(intent);
                 }
             });
+            addToCart.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
+                    UserSession session = new UserSession(getContext());
+                    Call<CartItem> call;
+                    UserSession userSession = new UserSession(getContext());
+                    if(userSession.getCurrentUser() != null){
+                        CartItem cartItem = new CartItem(userSession.getCurrentUser().getCartID(),item.getFurnitureID(),"1", item.getPrice());
+                        call = apiService.addCartItem(cartItem);
+                        call.enqueue(new Callback<CartItem>() {
+                            @Override
+                            public void onResponse(Call<CartItem> call, Response<CartItem> response) {
 
+                                if (response.isSuccessful() && response.body() != null) {
+                                    Toast.makeText(getContext(),"Item added to cart",Toast.LENGTH_SHORT);
+                                } else {
+                                    try {
+                                        // Convert the error body to a string
+                                        String errorMessage = response.errorBody().string();
+                                        Toast.makeText(getContext(), "Failed to add item :" + errorMessage, Toast.LENGTH_SHORT).show();
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                        Toast.makeText(getContext(), "Failed to get add item and parse error body", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(getContext(), "Failed to get add item and parse error body", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            }
 
-        }
+                            @Override
+                            public void onFailure(Call<CartItem> call, Throwable t) {
+                                Toast.makeText(getContext(),"Error: " + t.getMessage(),Toast.LENGTH_SHORT).show();
+                            }
+                        });}
+                    else {
 
-
+                        Toast.makeText(getContext(),"user not logged in",Toast.LENGTH_LONG).show();
+                    }
+                }
+            });
         return view;
     }
 }

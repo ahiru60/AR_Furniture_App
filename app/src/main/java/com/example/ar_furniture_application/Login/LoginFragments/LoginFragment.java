@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,8 +13,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.ar_furniture_application.Home.Home_Fragments.CatalogFragment;
+import com.example.ar_furniture_application.Models.User;
 import com.example.ar_furniture_application.R;
-import com.example.ar_furniture_application.Sessions.UserSession;
+import com.example.ar_furniture_application.Models.Sessions.UserSession;
 import com.example.ar_furniture_application.WebServices.ApiService;
 import com.example.ar_furniture_application.WebServices.ErrorResponse;
 import com.example.ar_furniture_application.WebServices.Hashing;
@@ -43,7 +46,7 @@ public class LoginFragment extends Fragment {
     private String mParam2;
 
     Button loginButton;
-    View signUp;
+    View signUp,close;
     EditText email, password;
 
 
@@ -67,8 +70,6 @@ public class LoginFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
-
     }
 
     @Override
@@ -76,11 +77,24 @@ public class LoginFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_login, container, false);
-
+        FragmentManager fragmentManager = getParentFragmentManager();
+        LoginFragment loginFragment = new LoginFragment();
+        close = view.findViewById(R.id.close);
         email = view.findViewById(R.id.loginEditTextEmailAddress);
         password = view.findViewById(R.id.loginEditTextTextPassword);
 
         loginButton = view.findViewById(R.id.login_button);
+
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentTransaction trans = fragmentManager.beginTransaction();
+                trans.remove(loginFragment);
+                trans.commit();
+                fragmentManager.popBackStack();
+            }
+        });
+
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,13 +112,13 @@ public class LoginFragment extends Fragment {
                                 UserSession userSession = new UserSession(getContext());
                                userSession.createSession(response.body());
                                 Toast.makeText(getContext(), "Logged in successfully", Toast.LENGTH_SHORT).show();
-
+                                FragmentTransaction trans = fragmentManager.beginTransaction();
+                                trans.remove(loginFragment);
+                                trans.commit();
+                                fragmentManager.popBackStack();
                         } else {
                             try {
-                                // Convert the error body to a string
-                                Gson gson = new Gson();
-                                ErrorResponse errorResponse = gson.fromJson(response.errorBody().string(), ErrorResponse.class);
-                                String errorMessage = errorResponse.getError();
+                                String errorMessage =response.errorBody().string();
                                 Toast.makeText(getContext(), "Failed to login :" + errorMessage, Toast.LENGTH_SHORT).show();
                             } catch (IOException e) {
                                 e.printStackTrace();
@@ -129,13 +143,12 @@ public class LoginFragment extends Fragment {
             public void onClick(View v) {
                 FragmentManager fragmentManager = getParentFragmentManager();
                 fragmentManager.beginTransaction()
-                        .replace(R.id.fragmentContainerView3, SignUpFragment.class, null)
+                        .replace(R.id.fragmentContainerView, SignUpFragment.class, null)
                         .setReorderingAllowed(true)
                         .addToBackStack("profile") // Name can be null
                         .commit();
             }
         });
-
         return view;
     }
 

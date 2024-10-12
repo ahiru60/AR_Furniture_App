@@ -19,4 +19,7 @@
     <string-array translatable="false" name="instant_placement_options_array">
         <item>Enable Instant Placement</item>
     </string-array>
+
+    <string name="luma_api_1">luma-api-key=790532d0-128e-4e51-bf58-85137b71a1e5-75fd8f8-4971-4cfe-9690-26e0459174d7</string>
+    <string name="luma_api_2">luma-api-key=20252478-2c55-4aca-ac52-ae92a0ec8673-a513462-88fc-4ecb-9fe3-f35ae603ffd4</string>
 </resources>

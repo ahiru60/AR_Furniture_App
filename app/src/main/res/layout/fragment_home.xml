@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/dark_grey"
     tools:context=".Home.Home_Fragments.HomeFragment">
 
     <!-- TODO: Update blank fragment layout -->
@@ -27,37 +28,20 @@
             android:textSize="24sp"
             android:orientation="horizontal"
             android:gravity="center">
-            <EditText
-                android:id="@+id/searchEditText"
-                android:layout_width="match_parent"
-                android:layout_height="41dp"
-                android:layout_marginLeft="55dp"
-                android:background="@drawable/background_round_edged_white_shape"
-                android:hint="Search"
-                android:paddingHorizontal="15sp"
-                android:paddingVertical="6sp"
-                android:textColor="@color/white"
-                android:textColorHint="@color/white">
-
-            </EditText>
-
-            <ImageButton
-                android:id="@+id/topSearchImageButton"
-                android:layout_width="42sp"
-                android:layout_height="match_parent"
-                android:layout_gravity="end"
-                android:layout_marginStart="15dp"
-                android:layout_marginEnd="44dp"
-                android:background="#00FFFFFF"
-                android:scaleType="centerInside"
-                android:src="@drawable/ic_search_white"
-                app:layout_constraintVertical_bias="0.571" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="AR FURNITURE"
+                android:textColor="@color/plain_yellow"
+                android:textStyle="bold"
+                android:textSize="25dp"/>
         </LinearLayout>
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/fragmentContainerView2"
             android:name="com.example.ar_furniture_application.Home.Home_Fragments.CatalogFragment"
             android:layout_width="match_parent"
+            android:background="@color/dark_grey"
             android:layout_height="578dp"
             android:paddingHorizontal="4sp" />
     </LinearLayout>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#D0D6DA"
+    tools:context=".Home.Home_Fragments.CatalogFragment">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <LinearLayout
+            android:id="@+id/search_section"
+            android:layout_width="match_parent"
+            android:layout_height="87dp"
+            android:paddingHorizontal="20dp"
+            android:background="@drawable/background_gradient_shape"
+            android:fontFamily="sans-serif-black"
+            android:text="Home"
+            android:layout_gravity="bottom"
+            android:textColor="@color/white"
+            android:textSize="24sp"
+            android:orientation="horizontal"
+            android:gravity="center">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="AR FURNITURE"
+                android:letterSpacing="0.17"
+                android:shadowColor="@color/plain_yellow"
+                android:shadowRadius="5"
+                android:textColor="@color/plain_yellow"
+                android:fontFamily="sans-serif-condensed"
+                android:textStyle="bold"
+                android:textSize="35dp"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/dark_grey"
+            android:orientation="vertical"
+            android:gravity="top|center_horizontal">
+            <TextView
+                android:id="@+id/message_catalog"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textSize="16dp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:visibility="gone"
+                android:textColor="@color/plain_yellow"
+                android:text="message_catalog"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/catalog_recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="571dp"
+                android:layout_gravity="center"
+                android:paddingHorizontal="13sp" />
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:indeterminateTint="@color/plain_yellow"
+                android:layout_gravity="center"/>
+        </LinearLayout>
+    </LinearLayout>
+
+</FrameLayout>

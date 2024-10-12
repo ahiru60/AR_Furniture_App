@@ -14,12 +14,13 @@
             android:layout_height="250sp"
             android:text="Forgot password"
             android:textSize="40sp"
-            android:textColor="@color/white"
+            android:textColor="@color/plain_yellow"
             android:gravity="center"
             android:background="@drawable/background_gradient_shape"/>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@color/dark_grey"
             android:paddingHorizontal="15sp"
             android:gravity="center_horizontal"
             android:orientation="vertical">
@@ -28,6 +29,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="15sp"
+            android:textColor="@color/white"
             android:text="We'll send a verification link to your email"
             android:textSize="17dp"
             android:textStyle="bold"/>
@@ -39,6 +41,8 @@
                 android:background="@drawable/background_round_edged_grey_shape"
                 android:paddingHorizontal="15sp"
                 android:paddingVertical="6sp"
+                android:textColor="@color/white"
+                android:textColorHint="@color/white"
                 android:layout_marginTop="35sp"
                 android:layout_marginBottom="15sp"
                 android:hint="e-mail"
@@ -48,7 +52,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
                 android:layout_marginTop="20sp"
-                android:backgroundTint="#1F1735"
+                android:textColor="@color/white"
+                android:background="@drawable/background_blue_gradient_round_shape"
                 android:text="Send"
                 android:textSize="17sp" />
             <LinearLayout
@@ -64,6 +69,7 @@
         android:layout_height="wrap_content"
         android:text="By continueing you agree to our Terms of Use and Privacy Policy."
         android:gravity="center"
+        android:textColor="@color/white"
         android:layout_gravity="bottom"
         android:paddingHorizontal="15sp"
         android:layout_marginVertical="20sp"/>

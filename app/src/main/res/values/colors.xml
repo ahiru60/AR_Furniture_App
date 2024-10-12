@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="black">#FF000000</color>
+    <color name="dark_grey">#02021B</color>
+    <color name="grey_mid">#2B2A31</color>
+    <color name="grey_light">#7A7A7A</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="cool_purple">#301A6E</color>
-    <color name="light_purple">#FF6200EE</color>
+    <color name="cool_blue">#1A1B6E</color>
+    <color name="light_blue">#005FEE</color>
     <color name="cool_purplee">#7B819C</color>
+    <color name="plain_yellow">#fff275</color>
     <color name="transparent">#00FFFFFF</color>
+    <color name="sause_red">#db504a</color>
+    <color name="sause_cheese">#e3b505</color>
 </resources>

@@ -6,11 +6,14 @@
 <!--        android:startColor="#81E4F1"-->
 <!--        android:endColor="#FF6200EE"-->
 <!--        android:angle="45" />-->
-    <stroke
-        android:color="#AAAAAA"
-        android:width="2sp">
+    <solid
+        android:color="@color/black"
+        />
+<!--    <stroke-->
+<!--        android:color="#AAAAAA"-->
+<!--        android:width="2sp">-->
 
-    </stroke>
+<!--    </stroke>-->
     <!-- Rounded corners -->
-    <corners android:radius="25dp" />
+    <corners android:radius="13dp" />
 </shape>

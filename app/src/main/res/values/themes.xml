@@ -1,9 +1,15 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.AR_Furniture_Application" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Base.Theme.AR_Furniture_Application" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your light theme here. -->
-        <item name="colorPrimary">@color/cool_purple</item>
+        <item name="colorPrimary">@color/cool_blue</item>
+        <item name="android:statusBarColor">@color/cool_blue</item>
     </style>
-
+    <style name="CustomScrollBarStyle">
+        <item name="android:scrollbarThumbVertical">@color/grey_mid</item>
+        <item name="android:scrollbarThumbHorizontal">@color/grey_mid</item>
+        <item name="android:scrollbarTrackVertical">@color/grey_mid</item>
+        <item name="android:scrollbarTrackHorizontal">@color/grey_mid</item>
+    </style>
     <style name="Theme.AR_Furniture_Application" parent="Base.Theme.AR_Furniture_Application" />
 </resources>
