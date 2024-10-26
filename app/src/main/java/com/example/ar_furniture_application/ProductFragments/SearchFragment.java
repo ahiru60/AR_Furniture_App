@@ -1,4 +1,4 @@
-package com.example.ar_furniture_application;
+package com.example.ar_furniture_application.ProductFragments;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -25,13 +25,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.ar_furniture_application.Adapters.CatalogAdapter;
 import com.example.ar_furniture_application.Home.Home_Fragments.CatalogFragment;
 import com.example.ar_furniture_application.Models.Sessions.UserSession;
-import com.example.ar_furniture_application.ProductFragments.ProductFragment;
+import com.example.ar_furniture_application.R;
 import com.example.ar_furniture_application.WebServices.ApiService;
 import com.example.ar_furniture_application.WebServices.ErrorResponse;
 import com.example.ar_furniture_application.WebServices.Models.CartItem;
 import com.example.ar_furniture_application.WebServices.Models.CatItem;
 import com.example.ar_furniture_application.WebServices.Models.Keyword;
 import com.example.ar_furniture_application.WebServices.RetrofitClient;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -64,9 +65,10 @@ public class SearchFragment extends Fragment implements CatalogAdapter.OnClickLi
     private TextView text;
     private WebView webView;
     private RecyclerView recyclerView;
-
+    private String userID;
+private UserSession userSession;
     CatalogAdapter productListsAdapter;
-
+    private FirebaseAnalytics mFirebaseAnalytics;
     public SearchFragment() {
         // Required empty public constructor
     }
@@ -97,6 +99,8 @@ public class SearchFragment extends Fragment implements CatalogAdapter.OnClickLi
             mParam2 = getArguments().getString(ARG_PARAM2);
 
         }
+        // Initialize FirebaseAnalytics
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(getContext());
     }
 
     @Override
@@ -104,11 +108,22 @@ public class SearchFragment extends Fragment implements CatalogAdapter.OnClickLi
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_search, container, false);
+        userSession = new UserSession(getContext());
+        userID = userSession.getCurrentUser().getUserID();
+        getActivity().getWindow().setStatusBarColor(getResources().getColor(R.color.cool_blue, getActivity().getTheme()));
        setupViews();
         topSearchImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 hideKeyboard();
+                String searchTerm = searchEditText.getText().toString();
+
+                // Firebase Analytics - Log Search Event
+                if (!searchTerm.isEmpty()) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString(FirebaseAnalytics.Param.SEARCH_TERM, searchTerm);
+                    mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SEARCH, bundle);
+                }
                 loadData(new CatalogFragment.DataCallback() {
                     @Override
                     public void onDataLoaded(List<CatItem> catItems) {
@@ -158,6 +173,7 @@ public class SearchFragment extends Fragment implements CatalogAdapter.OnClickLi
                             }
                             arrayAdapter = new ArrayAdapter<String>( getContext(), android.R.layout.simple_list_item_activated_1,items);
                             searchEditText.setAdapter(arrayAdapter);
+
                         } else {
                             try {
                                 text.setText("searching");
@@ -224,6 +240,7 @@ public class SearchFragment extends Fragment implements CatalogAdapter.OnClickLi
 
         productListsAdapter = new CatalogAdapter(this);
         recyclerView = view.findViewById(R.id.catalog_recyclerView);
+
     }
 
     @Override
@@ -241,7 +258,7 @@ public class SearchFragment extends Fragment implements CatalogAdapter.OnClickLi
 
 // Set the arguments to the fragment
         productFragment.setArguments(args);
-
+        hideKeyboard();
         FragmentManager fragmentManager = getParentFragmentManager();
         fragmentManager.beginTransaction()
                 .add(R.id.fragmentContainerView, productFragment)
@@ -295,7 +312,7 @@ public class SearchFragment extends Fragment implements CatalogAdapter.OnClickLi
     private void loadData(CatalogFragment.DataCallback callback) {
         ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
         Call<List<CatItem>> call;
-        call = apiService.searchItmes(searchEditText.getText().toString());
+        call = apiService.searchItmes(userID,searchEditText.getText().toString());
         call.enqueue(new Callback<List<CatItem>>() {
             @Override
             public void onResponse(Call<List<CatItem>> call, Response<List<CatItem>> response) {

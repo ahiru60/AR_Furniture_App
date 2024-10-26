@@ -31,14 +31,14 @@ public class CartItemListAdapter extends RecyclerView.Adapter<CartItemListAdapte
     @NonNull
     @Override
     public CartItemListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.order_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cart_item, parent, false);
         return new CartItemListViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull CartItemListViewHolder holder, int position) {
         holder.itemName.setText(items.get(position).getName());
-        holder.price.setText(items.get(position).getPrice());
+        holder.price.setText(String.format("%.2f", Double.valueOf(items.get(position).getPrice())));
         if(items.get(position).getImageURLs().size()>0){
             Picasso.get().load(items.get(position).getImageURLs().get(0)).into(holder.itemImage);
         }

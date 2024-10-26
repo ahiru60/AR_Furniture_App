@@ -1,11 +1,9 @@
 package com.example.ar_furniture_application.Login.LoginFragments;
 
 import android.os.Bundle;
-
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +11,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
-
 import com.example.ar_furniture_application.Models.User;
 import com.example.ar_furniture_application.R;
 import com.example.ar_furniture_application.Models.Sessions.UserSession;
@@ -22,71 +19,39 @@ import com.example.ar_furniture_application.WebServices.ErrorResponse;
 import com.example.ar_furniture_application.WebServices.Hashing;
 import com.example.ar_furniture_application.WebServices.Models.UserRequestBody;
 import com.example.ar_furniture_application.WebServices.RetrofitClient;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.gson.Gson;
-
 import java.io.IOException;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link SignUpFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class SignUpFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public SignUpFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment SignUpFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static SignUpFragment newInstance(String param1, String param2) {
-        SignUpFragment fragment = new SignUpFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    private FirebaseAnalytics mFirebaseAnalytics;  // Declare FirebaseAnalytics
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Initialize FirebaseAnalytics
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(getContext());
+
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            // Your existing code for argument handling
         }
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_sign_up, container, false);
+        getActivity().getWindow().setStatusBarColor(getResources().getColor(R.color.cool_blue, getActivity().getTheme()));
         FragmentManager fragmentManager = getParentFragmentManager();
         SignUpFragment signUpFragment = new SignUpFragment();
         LoginFragment loginFragment = new LoginFragment();
         Button signUp = view.findViewById(R.id.signupButton);
         ImageButton close = view.findViewById(R.id.close);
-        EditText name,phone,addressLine1,addressLine2,addressLine3,email,password,rePassword;
+        EditText name, phone, addressLine1, addressLine2, addressLine3, email, password, rePassword;
         name = view.findViewById(R.id.editTextName);
         phone = view.findViewById(R.id.editTextPhone);
         addressLine1 = view.findViewById(R.id.editTextAddressLine1);
@@ -96,59 +61,60 @@ public class SignUpFragment extends Fragment {
         password = view.findViewById(R.id.editTextpassword);
         rePassword = view.findViewById(R.id.editTextRepeat_password);
 
-
         signUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                if(password.getText().toString().equals(rePassword.getText().toString())){
+                if (password.getText().toString().equals(rePassword.getText().toString())) {
                     Hashing hasher = new Hashing();
                     String passwordHash = hasher.hashPassword(password.getText().toString());
-                ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
-                String address = addressLine1.getText().toString()+", "+addressLine2.getText().toString()+", "+addressLine3.getText().toString()+".";
-                UserRequestBody loginRequest = new UserRequestBody(name.getText().toString(),phone.getText().toString(),address, email.getText().toString(), passwordHash, "customer");
-                Call<User> call = apiService.createUser(loginRequest);
-                call.enqueue(new Callback<User>() {
-                    @Override
-                    public void onResponse(Call<User> call, Response<User> response) {
-                        if (response.isSuccessful() && response.body() != null) {
-                            UserSession userSession = new UserSession(getContext());
-                            userSession.createSession(response.body());
-                            FragmentTransaction trans = fragmentManager.beginTransaction();
-                            trans.remove(signUpFragment);
-                            trans.remove(loginFragment);
-                            trans.commit();
-                            fragmentManager.popBackStack();
-                            Toast.makeText(getContext(), "Signed up successfully", Toast.LENGTH_SHORT).show();
+                    ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
+                    String address = addressLine1.getText().toString() + ", " + addressLine2.getText().toString() + ", " + addressLine3.getText().toString() + ".";
+                    UserRequestBody loginRequest = new UserRequestBody(name.getText().toString(), phone.getText().toString(), address, email.getText().toString(), passwordHash, "customer");
+                    Call<User> call = apiService.createUser(loginRequest);
+                    call.enqueue(new Callback<User>() {
+                        @Override
+                        public void onResponse(Call<User> call, Response<User> response) {
+                            if (response.isSuccessful() && response.body() != null) {
+                                UserSession userSession = new UserSession(getContext());
+                                userSession.createSession(response.body());
+                                // Firebase Analytics - Log Sign Up Event
+                                Bundle bundle = new Bundle();
+                                bundle.putString(FirebaseAnalytics.Param.METHOD, "email"); // Specify the sign-up method (e.g., "email")
+                                mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SIGN_UP, bundle);
 
-                        } else {
-                            try {
-                                // Convert the error body to a string
-                                Gson gson = new Gson();
-                                ErrorResponse errorResponse = gson.fromJson(response.errorBody().string(), ErrorResponse.class);
-                                String errorMessage = errorResponse.getError();
-                                Toast.makeText(getContext(), "Failed to get signup :" + errorMessage, Toast.LENGTH_SHORT).show();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                                Toast.makeText(getContext(), "Failed to get signup and parse error body", Toast.LENGTH_SHORT).show();
+                                FragmentTransaction trans = fragmentManager.beginTransaction();
+                                trans.remove(signUpFragment);
+                                trans.remove(loginFragment);
+                                trans.commit();
+                                fragmentManager.popBackStack();
+                                Toast.makeText(getContext(), "Signed up successfully", Toast.LENGTH_SHORT).show();
+
+
+
+                            } else {
+                                try {
+                                    Gson gson = new Gson();
+                                    ErrorResponse errorResponse = gson.fromJson(response.errorBody().string(), ErrorResponse.class);
+                                    String errorMessage = errorResponse.getError();
+                                    Toast.makeText(getContext(), "Failed to get signup :" + errorMessage, Toast.LENGTH_SHORT).show();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                    Toast.makeText(getContext(), "Failed to get signup and parse error body", Toast.LENGTH_SHORT).show();
+                                }
                             }
                         }
-                    }
 
-                    @Override
-                    public void onFailure(Call<User> call, Throwable t) {
-                        Toast.makeText(getContext(), "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
+                        @Override
+                        public void onFailure(Call<User> call, Throwable t) {
+                            Toast.makeText(getContext(), "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
 
-            }
-                else{
+                } else {
                     Toast.makeText(getContext(), "Passwords don't match", Toast.LENGTH_SHORT).show();
                 }
-        }
-        }
-
-        );
+            }
+        });
 
         close.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -7,11 +7,9 @@ import androidx.fragment.app.Fragment;
 
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
-import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -20,13 +18,13 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.ar_furniture_application.ARSessionActivity;
 import com.example.ar_furniture_application.Models.CaptureResponse;
 import com.example.ar_furniture_application.Models.Sessions.UserSession;
 import com.example.ar_furniture_application.R;
 import com.example.ar_furniture_application.WebServices.ApiService;
 import com.example.ar_furniture_application.WebServices.Models.CartItem;
 import com.example.ar_furniture_application.WebServices.Models.CatItem;
+import com.example.ar_furniture_application.WebServices.Models.ProductViewLog;
 import com.example.ar_furniture_application.WebServices.RetrofitClient;
 import com.example.ar_furniture_application.customizations.CustomWebView;
 import com.squareup.picasso.Picasso;
@@ -53,10 +51,11 @@ public class ProductFragment extends Fragment {
     private CatItem item;
     private LinearLayout linearLayout;
     private ImageView image1,image2,image3;
-    private TextView itemName,itemPrice,itemDescription;
+    private TextView itemName,itemPrice,itemDescription,creatorname;
     public RatingBar ratingBar;
     private Bundle args;
     private CaptureResponse captureResponse;
+    private ApiService apiService;
 
     private Button ARButton,addToCart;
 
@@ -101,16 +100,16 @@ public class ProductFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_product, container, false);
-
+        UserSession userSession = new UserSession(getContext());
+        getActivity().getWindow().setStatusBarColor(getResources().getColor(R.color.deep_dark_blue, getActivity().getTheme()));
             args = getArguments();
             item = (CatItem) args.getSerializable("item");
             if (item != null) {
 
-                ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
-                Call<CaptureResponse> call;
-                call = apiService.getCaptureBySlug(item.getSlug());
-
-                call.enqueue(new Callback<CaptureResponse>() {
+                apiService = RetrofitClient.getClient().create(ApiService.class);
+                    Call<CaptureResponse> call1 = apiService.getCaptureBySlug(item.getSlug());
+                log(userSession, apiService, item,"Viewed product: "+item.getFurnitureID());
+                call1.enqueue(new Callback<CaptureResponse>() {
                     @Override
                     public void onResponse(Call<CaptureResponse> call, Response<CaptureResponse> response) {
                         if (response.isSuccessful() && response.body() != null) {
@@ -162,6 +161,7 @@ public class ProductFragment extends Fragment {
                 itemPrice = view.findViewById(R.id.itemPrice);
                 ratingBar = view.findViewById(R.id.ratingBar);
                 itemDescription = view.findViewById(R.id.itemDescription);
+                creatorname = view.findViewById(R.id.creatorname);
 
 
 
@@ -177,12 +177,16 @@ public class ProductFragment extends Fragment {
                             .into(imageViews[i]);
                     linearLayout.addView(imageView);
                     i++;
+                    if(i==3){
+                        break;
+                    }
                 }
 
                 itemName.setText(item.getName());
 
                 itemPrice.setText(item.getPrice()+"$");
                 itemDescription.setText(item.getDescription());
+                creatorname.setText("By "+item.getUsername());
             }
 
 
@@ -193,6 +197,7 @@ public class ProductFragment extends Fragment {
                 public void onClick(View v) {
                     //webView.loadUrl("");
                     //webView.setVisibility(View.GONE);
+                    log(userSession, apiService, item,"Viewed in AR product: "+item.getFurnitureID());
                     Intent intent = new Intent(getActivity(), ARSessionActivity.class);
                     intent.putExtra("furnitureName", item.getName());
                     intent.putExtra("modelURL", captureResponse.getLatestRun().getArtifacts().get(6).getUrl());
@@ -241,5 +246,27 @@ public class ProductFragment extends Fragment {
                 }
             });
         return view;
+    }
+    private void log(UserSession userSession, ApiService apiService, CatItem item,String message) {
+        // Create the request body
+        ProductViewLog productViewLog = new ProductViewLog(userSession.getCurrentUser().getUserID(),message);
+
+        // Make the Retrofit call
+        Call<Void> call = apiService.logProductView(productViewLog);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    Log.d("Retrofit", "Product view logged successfully");
+                } else {
+                    Log.e("Retrofit", "Failed to log product view. Response code: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Log.e("Retrofit", "Error logging product view: " + t.getMessage());
+            }
+        });
     }
 }

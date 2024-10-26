@@ -1,6 +1,7 @@
 package com.example.ar_furniture_application.Home.Home_Fragments;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +27,7 @@ import com.example.ar_furniture_application.WebServices.Models.CartItem;
 import com.example.ar_furniture_application.WebServices.Models.CatItem;
 import com.example.ar_furniture_application.WebServices.Models.UserRequestBody;
 import com.example.ar_furniture_application.WebServices.RetrofitClient;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -46,7 +48,7 @@ public class CatalogFragment extends Fragment implements CatalogAdapter.OnClickL
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
+    public static final String TAG = "CatalogFragment";
     ConstraintLayout productItem;
 
     // TODO: Rename and change types of parameters
@@ -56,6 +58,9 @@ public class CatalogFragment extends Fragment implements CatalogAdapter.OnClickL
     private CatalogAdapter productListsAdapter;
     private ProgressBar progressBar;
     private RecyclerView recyclerView;
+    private FirebaseAnalytics mFirebaseAnalytics;
+    private String userId;
+    private UserSession session;
 
 
     public CatalogFragment() {
@@ -87,12 +92,20 @@ public class CatalogFragment extends Fragment implements CatalogAdapter.OnClickL
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(getContext());
 
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_catalog, container, false);
+        getActivity().getWindow().setStatusBarColor(getResources().getColor(R.color.cool_blue, getActivity().getTheme()));
+        session = new UserSession(getContext());
+        if(session.getCurrentUser()!= null){
+            userId = session.getCurrentUser().getUserID();
+        }else{
+            userId = "0";
+        }
         progressBar = view.findViewById(R.id.progressBar);
         message = view.findViewById(R.id.message_catalog);
         recyclerView = view.findViewById(R.id.catalog_recyclerView);
@@ -109,6 +122,7 @@ public class CatalogFragment extends Fragment implements CatalogAdapter.OnClickL
             @Override
             public void onDataError(String errorMessage) {
                 Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "onDataError: " + errorMessage);
                 //message.setText(errorMessage);
                 recyclerView.setAdapter(null);
             }
@@ -141,7 +155,10 @@ public class CatalogFragment extends Fragment implements CatalogAdapter.OnClickL
 
         // Set the arguments to the fragment
         productFragment.setArguments(args);
-
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, String.valueOf(item.getFurnitureID())); // Assuming FurnitureID is the content ID
+        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "view_item"); // Set content type, e.g., "furniture"
+        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
         FragmentManager fragmentManager = getParentFragmentManager();
         fragmentManager.beginTransaction().add(R.id.fragmentContainerView, productFragment)
                 .setReorderingAllowed(true)
@@ -163,6 +180,10 @@ public class CatalogFragment extends Fragment implements CatalogAdapter.OnClickL
             public void onResponse(Call<CartItem> call, Response<CartItem> response) {
 
                 if (response.isSuccessful() && response.body() != null) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString(FirebaseAnalytics.Param.ITEM_ID, String.valueOf(item.getFurnitureID())); // Assuming FurnitureID is the content ID
+                    bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "add_to_cart"); // Set content type, e.g., "furniture"
+                    mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
                     Toast.makeText(getContext(),"Item added to cart",Toast.LENGTH_SHORT);
                 } else {
                     try {
@@ -183,21 +204,18 @@ public class CatalogFragment extends Fragment implements CatalogAdapter.OnClickL
             }
         });}
         else {
-
             Toast.makeText(getContext(),"user not logged in",Toast.LENGTH_LONG).show();
         }
     }
 
     private void loadData(DataCallback callback) {
         ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
-        UserSession session = new UserSession(getContext());
         Call<List<CatItem>> call;
         if (session.getCurrentUser() != null) {
-            UserRequestBody loginRequest = new UserRequestBody(session.getCurrentUser().getEmail());
-            call = apiService.getProducts(/*loginRequest*/);
+            call = apiService.getProducts(userId);
         } else {
 
-            call = apiService.getProducts();
+            call = apiService.getProducts(userId);
         }
         call.enqueue(new Callback<List<CatItem>>() {
             @Override
@@ -205,6 +223,7 @@ public class CatalogFragment extends Fragment implements CatalogAdapter.OnClickL
                 if (response.isSuccessful() && response.body() != null) {
                     progressBar.setVisibility(View.GONE);
                     recyclerView.setVisibility(View.VISIBLE);
+                    userId = "0";
                     callback.onDataLoaded(response.body());
                     System.out.println('k');
                 } else {
@@ -212,6 +231,7 @@ public class CatalogFragment extends Fragment implements CatalogAdapter.OnClickL
                         progressBar.setVisibility(View.GONE);
                         message.setText("Failed to get products");
                         message.setVisibility(View.VISIBLE);
+                        Log.d(TAG, "onResponse: Failed to get products: " + response.errorBody().string());
                         callback.onDataError("Failed to get products: " + response.errorBody().string());
                     } catch (IOException e) {
                         progressBar.setVisibility(View.GONE);
@@ -248,9 +268,9 @@ public class CatalogFragment extends Fragment implements CatalogAdapter.OnClickL
         Call<List<CatItem>> call;
         if (session.getCurrentUser() != null) {
             UserRequestBody loginRequest = new UserRequestBody(session.getCurrentUser().getEmail());
-            call = apiService.getProducts(/*loginRequest*/);
+            call = apiService.getProducts(userId);
         } else {
-            call = apiService.getProducts();
+            call = apiService.getProducts(userId);
         }
         call.enqueue(new Callback<List<CatItem>>() {
             @Override
@@ -262,6 +282,7 @@ public class CatalogFragment extends Fragment implements CatalogAdapter.OnClickL
                         // Convert the error body to a string
                         Gson gson = new Gson();
                         ErrorResponse errorResponse = gson.fromJson(response.errorBody().string(), ErrorResponse.class);
+                        userId = "0";
                         String errorMessage = errorResponse.getError();
                         Toast.makeText(getContext(), "Failed to get signup :" + errorMessage, Toast.LENGTH_SHORT).show();
                     } catch (IOException e) {

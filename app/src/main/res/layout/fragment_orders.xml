@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/deep_dark_blue"
+    tools:context=".Cart.Cart_Fragments.OrdersFragment">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="68sp"
+        android:gravity="center_horizontal"
+        android:paddingTop="15sp"
+        android:textColor="@color/white"
+        android:letterSpacing="0.1"
+        android:shadowColor="@color/white"
+        android:shadowRadius="9"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:background="@color/deep_dark_blue"
+        android:text="ORDERS" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/ordersRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    </LinearLayout>
+    <ProgressBar
+        android:id="@+id/ordersProgressBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:indeterminateTint="@color/white"
+        android:outlineAmbientShadowColor="@color/white"
+        android:outlineSpotShadowColor="@color/white"/>
+    <TextView
+        android:id="@+id/ordersErrorTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:textSize="18dp"
+        android:visibility="gone"
+        android:text="Faild to load orders"/>
+</FrameLayout>

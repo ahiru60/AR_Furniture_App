@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/deep_dark_blue"
+    tools:context=".Cart.Cart_Fragments.CheckoutFragment">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="68sp"
+        android:gravity="center_horizontal"
+        android:paddingTop="15sp"
+        android:textColor="@color/white"
+        android:letterSpacing="0.1"
+        android:shadowColor="@color/white"
+        android:shadowRadius="9"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:background="@color/deep_dark_blue"
+        android:text="CHECKOUT" />
+
+    <!-- Scrollable container for the items -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/deep_dark_blue">
+
+        <LinearLayout
+            android:id="@+id/itemsContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+        </LinearLayout>
+
+    </ScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="15dp"
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/cardBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColor="@color/white"
+            android:layout_marginHorizontal="10dp"
+            android:background="@drawable/background_blue_gradient_round_shape"
+            android:text="Card"/>
+        <Button
+            android:id="@+id/cashBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColor="@color/white"
+            android:layout_marginHorizontal="10dp"
+            android:background="@drawable/background_blue_gradient_round_shape"
+            android:text="Cash"/>
+        <Button
+            android:id="@+id/pointsBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColor="@color/white"
+            android:layout_marginHorizontal="10dp"
+            android:background="@drawable/background_blue_gradient_round_shape"
+            android:text="Points"/>
+    </LinearLayout>
+    <!-- Total price text -->
+    <TextView
+        android:id="@+id/totalPrice"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_margin="16dp"
+        android:text="Total: $0.00" />
+
+    <!-- Pay button -->
+    <Button
+        android:id="@+id/payBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Place Order"
+        android:layout_margin="16dp"
+        android:background="@drawable/background_orange_red_gradient_round_shape"
+        android:textColor="@color/white"
+        android:textStyle="bold" />
+
+</LinearLayout>

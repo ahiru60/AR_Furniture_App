@@ -8,6 +8,7 @@ import java.util.List;
 public class CatItem implements Serializable {
     private String FurnitureID;
     private String Name;
+    private String Username;
     private String Description;
     private String Price;
     private String Rating;
@@ -85,5 +86,9 @@ public class CatItem implements Serializable {
 
     public String getTexturesURL() {
         return texturesURL;
+    }
+
+    public String getUsername() {
+        return Username;
     }
 }

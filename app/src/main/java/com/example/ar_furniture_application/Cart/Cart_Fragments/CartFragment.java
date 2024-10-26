@@ -2,9 +2,12 @@ package com.example.ar_furniture_application.Cart.Cart_Fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -13,6 +16,7 @@ import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -45,6 +49,7 @@ public class CartFragment extends Fragment implements CartItemListAdapter.CartOn
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    public static final String TAG = "CartFragment";
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -54,8 +59,11 @@ public class CartFragment extends Fragment implements CartItemListAdapter.CartOn
     private TextView itemsDeleteBtn;
     private ProgressBar progressBar;
     private ImageButton loginBtn;
+    private Button checkoutBtn;
     private TextView noItemsText;
+    private LinearLayout itemsLayout;
     private boolean isSelectedMode = false;
+    private FragmentManager fragmentManager;
     private CartItemListAdapter cartItemListAdapter;
     private static List<CartItem> items = new ArrayList<>();
     private static List<CartItem> checkedItems = new ArrayList<>();
@@ -96,13 +104,17 @@ public class CartFragment extends Fragment implements CartItemListAdapter.CartOn
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_cart, container, false);
+        getActivity().getWindow().setStatusBarColor(getResources().getColor(R.color.cool_blue, getActivity().getTheme()));
+        fragmentManager = getActivity().getSupportFragmentManager();
         itemsDeleteBtn = view.findViewById(R.id.itemsDeleteBtn);
+        itemsLayout = view.findViewById(R.id.itemsLayout);
         RecyclerView recyclerView = view.findViewById(R.id.orderListRecyclerView);
         LinearLayout checkoutBtnLayout = view.findViewById(R.id.checkoutBtnLayout);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         cartItemListAdapter = new CartItemListAdapter(this);
         noItemsText = view.findViewById(R.id.message_cart);
         progressBar = view.findViewById(R.id.progressBar);
+        checkoutBtn = view.findViewById(R.id.checkoutBtn);
         loginBtn = view.findViewById(R.id.loginBtn);
 
         UserSession session = new UserSession(getContext());
@@ -121,10 +133,12 @@ public class CartFragment extends Fragment implements CartItemListAdapter.CartOn
                         if (items.size() > 0) {
                             recyclerView.setVisibility(View.VISIBLE);
                             checkoutBtnLayout.setVisibility(View.VISIBLE);
+                            itemsLayout.setGravity(Gravity.BOTTOM);
                             cartItemListAdapter.addData(items);
+                            progressBar.setVisibility(View.GONE);
                             recyclerView.setLayoutManager(linearLayoutManager);
                             recyclerView.setAdapter(cartItemListAdapter);
-                            Toast.makeText(getContext(), "Items loaded", Toast.LENGTH_SHORT);
+                           // Toast.makeText(getContext(), "Items loaded", Toast.LENGTH_SHORT);
                         } else {
                             recyclerView.setVisibility(View.GONE);
                             progressBar.setVisibility(View.GONE);
@@ -132,8 +146,12 @@ public class CartFragment extends Fragment implements CartItemListAdapter.CartOn
                         }
                     } else {
                         try {
+                            noItemsText.setText("Cart is empty");
+                            noItemsText.setVisibility(View.VISIBLE);
+                            progressBar.setVisibility(View.GONE);
                             String errorMessage = response.errorBody().string();
-                            Toast.makeText(getContext(), "Failed to add item :" + errorMessage, Toast.LENGTH_SHORT).show();
+                            Log.d(TAG, "onResponse: " + errorMessage);
+                            Toast.makeText(getContext(), "No items found", Toast.LENGTH_SHORT).show();
                         } catch (IOException e) {
                             e.printStackTrace();
                             Toast.makeText(getContext(), "Failed to get add item and parse error body", Toast.LENGTH_SHORT).show();
@@ -163,7 +181,7 @@ public class CartFragment extends Fragment implements CartItemListAdapter.CartOn
 
                 Call<ResponseBody> call;
                 User itemRequest = session.getCurrentUser();
-                call = apiService.removeCartItems(checkedItems);
+                call = apiService.deleteCartItems(checkedItems);
                 call.enqueue(new Callback<ResponseBody>() {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -196,6 +214,29 @@ public class CartFragment extends Fragment implements CartItemListAdapter.CartOn
 
             }
         });
+        checkoutBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (items.size() > 0) {
+                    Bundle bundle = new Bundle();
+                    // Assuming your CartItem class is Serializable
+                    bundle.putSerializable("cart_items", (ArrayList<CartItem>) items);
+
+                    // Create the CheckoutFragment instance and pass the bundle
+                    CheckoutFragment checkoutFragment = new CheckoutFragment();
+                    checkoutFragment.setArguments(bundle);
+
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.fragmentContainerView, checkoutFragment)
+                            .setReorderingAllowed(true)
+                            .addToBackStack("CheckoutFragment")
+                            .commit();
+                } else {
+                    Toast.makeText(getContext(), "No items in cart", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

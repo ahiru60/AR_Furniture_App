@@ -1,8 +1,8 @@
 package com.example.ar_furniture_application;
 
-import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
@@ -12,11 +12,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.ar_furniture_application.Cart.Cart_Fragments.OrdersFragment;
 import com.example.ar_furniture_application.Home.Home_Fragments.CatalogFragment;
-import com.example.ar_furniture_application.Home.Home_Fragments.HomeFragment;
 import com.example.ar_furniture_application.Login.LoginFragments.LoginFragment;
 import com.example.ar_furniture_application.Models.Sessions.UserSession;
 import com.example.ar_furniture_application.Models.User;
+import com.example.ar_furniture_application.Utills.CapitalCaseUtils;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -31,7 +32,7 @@ public class ProfileFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
 
     private Button login,logout;
-    private TextView text;
+    private TextView username,email,biography;
     private UserSession userSession;
     private View view;
     private FragmentManager fragmentManager;
@@ -39,6 +40,8 @@ public class ProfileFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private View order;
+    private ConstraintLayout profile;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -76,6 +79,7 @@ public class ProfileFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.fragment_profile, container, false);
+        getActivity().getWindow().setStatusBarColor(getResources().getColor(R.color.deep_dark_blue, getActivity().getTheme()));
        setupViews();
        setupBtnClicks();
         return view;
@@ -112,20 +116,36 @@ public class ProfileFragment extends Fragment {
 
     private void setupViews() {
         fragmentManager = getParentFragmentManager();
+        profile = view.findViewById(R.id.profile_header);
+        order = view.findViewById(R.id.orders);
         login = view.findViewById(R.id.login);
         logout = view.findViewById(R.id.logout);
-        text = view.findViewById(R.id.text);
+        username = view.findViewById(R.id.user_name);
+        email = view.findViewById(R.id.user_email);
         userSession = new UserSession(getContext());
         User user = userSession.getCurrentUser();
         if(user!= null){
-            text.setText("Welcome "+ user.getName()+"!");
+            username.setText(CapitalCaseUtils.toCapitalCase(user.getName()));
+            email.setText(user.getEmail());
             logout.setVisibility(View.VISIBLE);
             login.setVisibility(View.GONE);
         }
         else {
+            profile.setVisibility(View.GONE);
             logout.setVisibility(View.GONE);
             login.setVisibility(View.VISIBLE);
         }
+
+        order.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fragmentManager.beginTransaction()
+                        .replace(R.id.fragmentContainerView, OrdersFragment.class, null)
+                        .setReorderingAllowed(true)
+                        .addToBackStack("orders") // Name can be null
+                        .commit();
+            }
+        });
     }
 
 }

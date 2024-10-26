@@ -4,69 +4,110 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/dark_grey"
+    android:background="@color/deep_dark_blue"
     android:orientation="vertical"
     tools:context=".ProfileFragment">
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/dark_grey"
+    android:background="@color/deep_dark_blue"
     android:orientation="vertical">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-        <LinearLayout
-            android:id="@+id/search_section"
-            android:layout_width="match_parent"
-            android:layout_height="87dp"
-            android:background="@drawable/background_gradient_shape"
-            android:text="Home"
-            android:layout_gravity="bottom"
-            android:textColor="@color/white"
-            android:textSize="24sp"
-            android:orientation="vertical"
-            android:gravity="center">
-            <TextView
-                android:id="@+id/text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Sign in for best experience"
-                android:layout_marginBottom="10dp"
-                android:textColor="@color/plain_yellow"
-                android:textStyle="bold"
-                android:layout_marginTop="20dp"
-                android:letterSpacing="0.05"
-                android:shadowColor="@color/black"
-                android:shadowRadius="9"
-                android:textSize="22dp"/>
-        </LinearLayout>
-        <LinearLayout
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/profile_header"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:paddingTop="15dp"
-            android:paddingHorizontal="8dp">
-        <Button
-            android:id="@+id/login"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/background_blue_gradient_round_shape"
-            android:text="Sign in / Register"
-            android:textColor="@color/plain_yellow"
-            android:textStyle="bold"
-            android:letterSpacing="0.05"/>
-        <Button
-            android:id="@+id/logout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:background="@drawable/background_blue_gradient_round_shape"
-            android:textColor="@color/plain_yellow"
-            android:textStyle="bold"
-            android:letterSpacing="0.05"
-            android:text="Logout"/>
-        </LinearLayout>
+            android:background="@color/deep_dark_blue"
+            tools:context=".UserProfileFragment">
+
+            <!-- Profile Image -->
+            <ImageView
+                android:id="@+id/profile_image"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_marginTop="24dp"
+                android:contentDescription="profile_picture"
+                android:src="@drawable/baseline_account_circle_24"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:scaleType="centerCrop"/>
+
+            <!-- User Name -->
+            <TextView
+                android:id="@+id/user_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="John Doe"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                app:layout_constraintTop_toBottomOf="@id/profile_image"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="16dp"/>
+
+            <!-- Email -->
+            <TextView
+                android:id="@+id/user_email"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/grey_lighter"
+                android:text="john.doe@example.com"
+                android:textSize="16sp"
+                app:layout_constraintTop_toBottomOf="@id/user_name"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="8dp"/>
+
+            <!-- Bio -->
+
+            <!-- Edit Profile Button -->
+            <TextView
+                android:id="@+id/user_bio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:textColor="@color/grey_light"
+                android:text="A short bio about the user."
+                android:textSize="14sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/user_email" />
+
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:paddingHorizontal="8dp"
+                android:paddingTop="15dp"
+                app:layout_constraintTop_toBottomOf="@id/user_bio"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="24dp">
+
+                <Button
+                    android:id="@+id/logout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/background_blue_gradient_round_shape"
+                    android:letterSpacing="0.05"
+                    android:text="Logout"
+                    android:textColor="@color/plain_yellow"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
     </LinearLayout>
     <!-- TODO: Update blank fragment layout -->
     <LinearLayout
@@ -79,6 +120,9 @@
             android:layout_height="match_parent"
             android:layout_marginTop="17dp"
             android:orientation="vertical">
+
+
+
             <ScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -103,6 +147,7 @@
                             app:layout_constraintVertical_bias="0.444" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
                     <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/orders"
                         android:layout_width="match_parent"
                         android:layout_height="60dp">
 
@@ -136,6 +181,22 @@
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </LinearLayout>
             </ScrollView>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:paddingTop="23dp">
+                <Button
+                    android:id="@+id/login"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/background_blue_gradient_round_shape"
+                    android:letterSpacing="0.05"
+                    android:text="Sign in"
+                    android:textColor="@color/plain_yellow"
+                    android:textStyle="bold" />
+            </LinearLayout>
         </LinearLayout>
 
     </LinearLayout>

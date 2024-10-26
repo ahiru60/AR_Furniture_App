@@ -1,21 +1,18 @@
 package com.example.ar_furniture_application;
 
-import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.drawable.DrawableCompat;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import com.example.ar_furniture_application.Cart.Cart_Fragments.CartFragment;
 import com.example.ar_furniture_application.Home.Home_Fragments.CatalogFragment;
+import com.example.ar_furniture_application.ProductFragments.SearchFragment;
 
 public class MainActivity extends AppCompatActivity{
     private ImageButton homeImgButton,searchImgButton, cartImgButton,profileImgButton;
@@ -26,6 +23,7 @@ public class MainActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        getWindow().setStatusBarColor(getResources().getColor(R.color.cool_blue, getTheme()));
 
 //        mContentView = findViewById(R.id.root_layout);
 //        mContentView.setFitsSystemWindows(true);

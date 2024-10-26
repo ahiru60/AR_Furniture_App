@@ -1,4 +1,4 @@
-package com.example.ar_furniture_application;
+package com.example.ar_furniture_application.ProductFragments;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -18,6 +18,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentOnAttachListener;
 
+import com.example.ar_furniture_application.R;
 import com.google.ar.core.Anchor;
 import com.google.ar.core.Config;
 import com.google.ar.core.HitResult;

@@ -1,8 +1,9 @@
 package com.example.ar_furniture_application.WebServices.Models;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class CartItem {
+public class CartItem implements Serializable {
     private String CartItemID;
     private String CartID;
     private String FurnitureID;
