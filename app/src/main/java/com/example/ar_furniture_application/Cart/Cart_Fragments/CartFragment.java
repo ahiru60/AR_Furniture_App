@@ -17,44 +17,29 @@ import android.widget.Toast;
 import androidx.activity.OnBackPressedCallback;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ar_furniture_application.Adapters.CartItemListAdapter;
 import com.example.ar_furniture_application.LoginActivity;
 import com.example.ar_furniture_application.Models.Sessions.UserSession;
-import com.example.ar_furniture_application.Models.User;
 import com.example.ar_furniture_application.R;
-import com.example.ar_furniture_application.WebServices.ApiService;
+import com.example.ar_furniture_application.ViewModel.CartViewModel;
 import com.example.ar_furniture_application.WebServices.Models.CartItem;
-import com.example.ar_furniture_application.WebServices.RetrofitClient;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link CartFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class CartFragment extends Fragment implements CartItemListAdapter.CartOnClickListener {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     public static final String TAG = "CartFragment";
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    private ApiService apiService;
+    private CartViewModel viewModel;
     private View view;
     private TextView itemsDeleteBtn;
     private ProgressBar progressBar;
@@ -62,25 +47,16 @@ public class CartFragment extends Fragment implements CartItemListAdapter.CartOn
     private Button checkoutBtn;
     private TextView noItemsText;
     private LinearLayout itemsLayout;
-    private boolean isSelectedMode = false;
     private FragmentManager fragmentManager;
     private CartItemListAdapter cartItemListAdapter;
-    private static List<CartItem> items = new ArrayList<>();
-    private static List<CartItem> checkedItems = new ArrayList<>();
+    private List<CartItem> items = new ArrayList<>();
+    private RecyclerView recyclerView;
+    private LinearLayout checkoutBtnLayout;
 
     public CartFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment NotificationsFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static CartFragment newInstance(String param1, String param2) {
         CartFragment fragment = new CartFragment();
         Bundle args = new Bundle();
@@ -97,19 +73,18 @@ public class CartFragment extends Fragment implements CartItemListAdapter.CartOn
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-        apiService = RetrofitClient.getClient().create(ApiService.class);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_cart, container, false);
         getActivity().getWindow().setStatusBarColor(getResources().getColor(R.color.cool_blue, getActivity().getTheme()));
+
         fragmentManager = getActivity().getSupportFragmentManager();
         itemsDeleteBtn = view.findViewById(R.id.itemsDeleteBtn);
         itemsLayout = view.findViewById(R.id.itemsLayout);
-        RecyclerView recyclerView = view.findViewById(R.id.orderListRecyclerView);
-        LinearLayout checkoutBtnLayout = view.findViewById(R.id.checkoutBtnLayout);
+        recyclerView = view.findViewById(R.id.orderListRecyclerView);
+        checkoutBtnLayout = view.findViewById(R.id.checkoutBtnLayout);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         cartItemListAdapter = new CartItemListAdapter(this);
         noItemsText = view.findViewById(R.id.message_cart);
@@ -117,137 +92,84 @@ public class CartFragment extends Fragment implements CartItemListAdapter.CartOn
         checkoutBtn = view.findViewById(R.id.checkoutBtn);
         loginBtn = view.findViewById(R.id.loginBtn);
 
+        viewModel = new ViewModelProvider(this).get(CartViewModel.class);
+
+        viewModel.getCartItemsLiveData().observe(getViewLifecycleOwner(), cartItems -> {
+            items = cartItems;
+            if (items.size() > 0) {
+                recyclerView.setVisibility(View.VISIBLE);
+                checkoutBtnLayout.setVisibility(View.VISIBLE);
+                itemsLayout.setGravity(Gravity.BOTTOM);
+                cartItemListAdapter.addData(items);
+                progressBar.setVisibility(View.GONE);
+                recyclerView.setLayoutManager(linearLayoutManager);
+                recyclerView.setAdapter(cartItemListAdapter);
+            } else {
+                recyclerView.setVisibility(View.GONE);
+                progressBar.setVisibility(View.GONE);
+                noItemsText.setVisibility(View.VISIBLE);
+            }
+        });
+
+        viewModel.getDeleteSuccessLiveData().observe(getViewLifecycleOwner(), success -> {
+            if (Boolean.TRUE.equals(success)) {
+                List<CartItem> checkedItems = cartItemListAdapter.getCheckedItems();
+                for (CartItem item : checkedItems) {
+                    cartItemListAdapter.notifyItemRemoved(items.indexOf(item));
+                    items.remove(item);
+                }
+                checkedItems.clear();
+            }
+        });
+
+        viewModel.getErrorLiveData().observe(getViewLifecycleOwner(), errorMessage -> {
+            Log.d(TAG, "Error: " + errorMessage);
+            noItemsText.setText(errorMessage);
+            noItemsText.setVisibility(View.VISIBLE);
+            progressBar.setVisibility(View.GONE);
+            Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
+        });
+
         UserSession session = new UserSession(getContext());
         if (session.getCurrentUser() != null) {
-
-            Call<List<CartItem>> call;
-            User itemRequest = session.getCurrentUser();
-            call = apiService.getCartItems(itemRequest);
-            call.enqueue(new Callback<List<CartItem>>() {
-
-                @Override
-                public void onResponse(Call<List<CartItem>> call, Response<List<CartItem>> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        items = response.body();
-                        System.out.println('l');
-                        if (items.size() > 0) {
-                            recyclerView.setVisibility(View.VISIBLE);
-                            checkoutBtnLayout.setVisibility(View.VISIBLE);
-                            itemsLayout.setGravity(Gravity.BOTTOM);
-                            cartItemListAdapter.addData(items);
-                            progressBar.setVisibility(View.GONE);
-                            recyclerView.setLayoutManager(linearLayoutManager);
-                            recyclerView.setAdapter(cartItemListAdapter);
-                           // Toast.makeText(getContext(), "Items loaded", Toast.LENGTH_SHORT);
-                        } else {
-                            recyclerView.setVisibility(View.GONE);
-                            progressBar.setVisibility(View.GONE);
-                            noItemsText.setVisibility(View.VISIBLE);
-                        }
-                    } else {
-                        try {
-                            noItemsText.setText("Cart is empty");
-                            noItemsText.setVisibility(View.VISIBLE);
-                            progressBar.setVisibility(View.GONE);
-                            String errorMessage = response.errorBody().string();
-                            Log.d(TAG, "onResponse: " + errorMessage);
-                            Toast.makeText(getContext(), "No items found", Toast.LENGTH_SHORT).show();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                            Toast.makeText(getContext(), "Failed to get add item and parse error body", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<List<CartItem>> call, Throwable t) {
-                    progressBar.setVisibility(View.GONE);
-                    noItemsText.setText("Faild to load items");
-                    noItemsText.setVisibility(View.VISIBLE);
-                }
-            });
+            viewModel.loadCartItems(session.getCurrentUser());
         } else {
             recyclerView.setVisibility(View.GONE);
             progressBar.setVisibility(View.GONE);
             noItemsText.setVisibility(View.VISIBLE);
             loginBtn.setVisibility(View.VISIBLE);
-
         }
-        itemsDeleteBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                items = cartItemListAdapter.getItems();
-                checkedItems = cartItemListAdapter.getCheckedItems();
 
-                Call<ResponseBody> call;
-                User itemRequest = session.getCurrentUser();
-                call = apiService.deleteCartItems(checkedItems);
-                call.enqueue(new Callback<ResponseBody>() {
-                    @Override
-                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                        if (response.isSuccessful() && response.body() != null) {
-                            for (CartItem item : checkedItems) {
-                                cartItemListAdapter.notifyItemRemoved(items.indexOf(item));
-                                items.remove(item);
-
-                            }
-                            checkedItems.clear();
-                            System.out.println(items);
-                            Toast.makeText(getContext(), "Items removed", Toast.LENGTH_SHORT);
-                        } else {
-                            try {
-                                // Convert the error body to a string
-                                String errorMessage = response.errorBody().string();
-                                Toast.makeText(getContext(), "Failed to remove item :" + errorMessage, Toast.LENGTH_SHORT).show();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                                Toast.makeText(getContext(), "Failed to remove item and parse error body", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<ResponseBody> call, Throwable t) {
-
-                    }
-                });
-
-            }
+        itemsDeleteBtn.setOnClickListener(v -> {
+            List<CartItem> checkedItems = cartItemListAdapter.getCheckedItems();
+            viewModel.deleteCartItems(checkedItems);
         });
-        checkoutBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (items.size() > 0) {
-                    Bundle bundle = new Bundle();
-                    // Assuming your CartItem class is Serializable
-                    bundle.putSerializable("cart_items", (ArrayList<CartItem>) items);
 
-                    // Create the CheckoutFragment instance and pass the bundle
-                    CheckoutFragment checkoutFragment = new CheckoutFragment();
-                    checkoutFragment.setArguments(bundle);
-
-                    fragmentManager.beginTransaction()
-                            .replace(R.id.fragmentContainerView, checkoutFragment)
-                            .setReorderingAllowed(true)
-                            .addToBackStack("CheckoutFragment")
-                            .commit();
-                } else {
-                    Toast.makeText(getContext(), "No items in cart", Toast.LENGTH_SHORT).show();
-                }
+        checkoutBtn.setOnClickListener(v -> {
+            if (items.size() > 0) {
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("cart_items", (ArrayList<CartItem>) items);
+                CheckoutFragment checkoutFragment = new CheckoutFragment();
+                checkoutFragment.setArguments(bundle);
+                fragmentManager.beginTransaction()
+                        .replace(R.id.fragmentContainerView, checkoutFragment)
+                        .setReorderingAllowed(true)
+                        .addToBackStack("CheckoutFragment")
+                        .commit();
+            } else {
+                Toast.makeText(getContext(), "No items in cart", Toast.LENGTH_SHORT).show();
             }
         });
 
-        loginBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), LoginActivity.class);
-                getActivity().startActivity(intent);
-            }
+        loginBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), LoginActivity.class);
+            getActivity().startActivity(intent);
         });
+
         OnBackPressedCallback callback = new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                isSelectedMode = cartItemListAdapter.getSelectedMode();
+                boolean isSelectedMode = cartItemListAdapter.getSelectedMode();
                 if (isSelectedMode) {
                     cartItemListAdapter.getCheckedItems().clear();
                     itemsDeleteBtn.setVisibility(View.GONE);
@@ -255,14 +177,13 @@ public class CartFragment extends Fragment implements CartItemListAdapter.CartOn
                     cartItemListAdapter.notifyDataSetChanged();
                 } else {
                     getFragmentManager().popBackStack();
-
                 }
             }
         };
         getActivity().getOnBackPressedDispatcher().addCallback(callback);
+
         return view;
     }
-
 
     @Override
     public void ItemsOnLongClick() {
@@ -271,6 +192,5 @@ public class CartFragment extends Fragment implements CartItemListAdapter.CartOn
 
     @Override
     public void deleteBtnOnClick() {
-
     }
 }
